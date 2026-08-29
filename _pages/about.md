@@ -6,7 +6,7 @@ subtitle: 嵌入式系统 · 多传感器融合 · Unity 交互开发
 
 profile:
   align: right
-  image: prof_pic.jpg
+  image: prof_pic1.png
   image_circular: true # crops the image to make it circular
   more_info: >
     <p>电子信息与嵌入式系统方向</p>
@@ -27,7 +27,7 @@ latest_posts:
 
 你好，我是1oong7。
 
-我主要关注嵌入式系统、超声波定位、IMU 姿态融合以及 Unity 交互应用。这个网站用于记录项目实践、技术笔记与学习思考。
+我主要关注嵌入式系统开发、IMU 姿态融合以及 Unity 交互应用。这个网站用于记录项目实践、技术笔记、学习思考以及一些随笔。
 
 ## 关注方向
 
@@ -36,3 +36,5 @@ latest_posts:
 - IMU 姿态解算与多传感器融合
 - Unity 手势追踪与交互开发
 - 卡尔曼滤波及其工程应用
+- 开源项目复刻
+- 网络技术
