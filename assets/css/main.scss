@@ -354,11 +354,29 @@ pre,
 /* A deterministic Rouge palette that remains readable in both themes. */
 .post .highlight,
 .post figure.highlight {
-  overflow: hidden;
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-color: var(--global-divider-color) transparent;
+  scrollbar-width: thin;
+  -webkit-overflow-scrolling: touch;
   background: var(--code-bg) !important;
   border: 1px solid var(--code-border);
   border-radius: 12px;
   box-shadow: 0 8px 22px rgba(31, 41, 55, 0.08);
+}
+
+.post .highlight::-webkit-scrollbar,
+.post figure.highlight::-webkit-scrollbar {
+  height: 0.65rem;
+}
+
+.post .highlight::-webkit-scrollbar-thumb,
+.post figure.highlight::-webkit-scrollbar-thumb {
+  background: var(--global-divider-color);
+  border: 2px solid transparent;
+  border-radius: 999px;
+  background-clip: padding-box;
 }
 
 .post .highlight pre,
@@ -373,8 +391,19 @@ pre,
 
 .post .highlight pre,
 .post figure.highlight pre {
+  width: max-content;
+  min-width: 100%;
   padding: 1rem 1.15rem;
   margin: 0;
+  overflow: visible;
+  white-space: pre;
+}
+
+.post .highlight code,
+.post figure.highlight code {
+  overflow-wrap: normal;
+  word-break: normal;
+  white-space: inherit;
 }
 
 .post .highlight :is(.c, .cm, .c1, .cs) {

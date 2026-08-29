@@ -2,7 +2,7 @@
 layout: about
 title: 关于我
 permalink: /
-subtitle: 嵌入式系统 · 多传感器融合 · Unity 交互开发
+subtitle: 一些想法，一些记录，也留下一点正在发生的生活
 
 profile:
   align: right
