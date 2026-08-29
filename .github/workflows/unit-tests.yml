@@ -1,42 +1,10 @@
 name: Integration tests
 
 on:
-  push:
-    branches:
-      - master
-      - main
-      - v1.0-dev
-    paths:
-      - "Gemfile"
-      - "Gemfile.lock"
-      - "_config.yml"
-      - "_data/**"
-      - "_pages/**"
-      - "_posts/**"
-      - "_projects/**"
-      - "assets/**"
-      - "test/**"
-      - "package.json"
-      - "package-lock.json"
-      - ".github/workflows/unit-tests.yml"
-  pull_request:
-    branches:
-      - master
-      - main
-      - v1.0-dev
-    paths:
-      - "Gemfile"
-      - "Gemfile.lock"
-      - "_config.yml"
-      - "_data/**"
-      - "_pages/**"
-      - "_posts/**"
-      - "_projects/**"
-      - "assets/**"
-      - "test/**"
-      - "package.json"
-      - "package-lock.json"
-      - ".github/workflows/unit-tests.yml"
+  # These integration tests exercise al-folio's bundled demo posts and are
+  # intended for theme development. This personal site hides those examples,
+  # so keep the suite available for explicit maintenance runs only.
+  workflow_dispatch:
 
 jobs:
   comments-integration-tests:
