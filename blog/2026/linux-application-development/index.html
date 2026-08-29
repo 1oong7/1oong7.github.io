@@ -1,0 +1,623 @@
+<!DOCTYPE html> <html lang="zh-CN"> <head> <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"> <meta charset="utf-8"> <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"> <meta http-equiv="X-UA-Compatible" content="IE=edge"> <title> Linux 应用开发学习笔记 | 1oong7的个人博客 </title> <meta name="author" content="Longqi Li"> <meta name="description" content="整理 Linux 应用开发中的 GCC、Makefile、文件 I/O、Framebuffer、输入子系统与 select/poll 编程基础。"> <meta name="keywords" content="STM32, nRF52, embedded systems, ultrasonic localization, sensor fusion, Unity"> <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https:; style-src 'self' 'unsafe-inline' https:; img-src 'self' data: https:; font-src 'self' data: https:; media-src 'self' https:; frame-src 'self' https:; connect-src 'self' https:;"> <style>
+  :root {
+    --max-content-width: 1280px;
+  }
+</style> <link rel="stylesheet" href="/assets/css/tailwind.css?v=50c64c15cbb9fd1ce6056fdb8bcb4b62"> <link defer rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tocbot@4.36.4/dist/tocbot.css" integrity="sha256-zTN0r+0OKaIv2xqeNNIYxNk0pWJ6+IqPGc1iDgVzWF0=" crossorigin="anonymous"> <link defer rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.2.0/css/all.min.css" integrity="sha256-MVopmdyC2tYTiJ8wlktf0uh0v4NgT+vNdyVFepi7Q0c=" crossorigin="anonymous"> <link defer rel="stylesheet" href="https://cdn.jsdelivr.net/npm/academicons@1.9.5/css/academicons.min.css" integrity="sha256-SzrCOBJbGVFMahewkgjwnApaV2+av1DwMAA+/QGLyZw=" crossorigin="anonymous"> <link defer rel="stylesheet" href="https://cdn.jsdelivr.net/npm/scholar-icons@1.0.3/css/scholar-icons.css" integrity="sha256-VY3hHVj/hNX3fYG6wtbA6TcKJQl7+FthzGSyIB64klY=" crossorigin="anonymous"> <link defer rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Noto+Sans+SC:400,500,600,700|JetBrains+Mono:400,500,600|Material+Icons&amp;display=swap"> <link defer rel="stylesheet" href="/assets/css/jekyll-pygments-themes-github.css?v=591dab5a4e56573bf4ef7fd332894c99" media="" id="highlight_theme_light"> <link rel="shortcut icon" href="data:image/svg+xml,&lt;svg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%20100%20100%22&gt;&lt;text%20y=%22.9em%22%20font-size=%2290%22&gt;%F0%9F%A7%AD&lt;/text&gt;&lt;/svg&gt;"> <link rel="stylesheet" href="/assets/css/main.css?v=3116ba77db9ee1581d05bb3e86fbf7f1"> <link rel="canonical" href="https://1oong7.github.io/blog/2026/linux-application-development/"> <script src="/assets/js/theme.js?v=5286c3e4c334d0ecb8fc0c40ff4fa7ec"></script> <link defer rel="stylesheet" href="/assets/css/jekyll-pygments-themes-native.css?v=5847e5ed4a4568527aa6cfab446049ca" media="none" id="highlight_theme_dark"> <script>
+    initTheme();
+  </script> </head> <body class="fixed-top-nav "> <header> <nav id="navbar" class="navbar navbar-light navbar-expand-sm fixed-top" role="navigation"> <div class="container"> <a class="navbar-brand title font-weight-lighter" href="/"> 1oong7的个人博客 </a> <button class="navbar-toggler collapsed navbar-toggler-main" type="button" data-nav-toggle="navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation"> <span class="sr-only">Toggle navigation</span> <span class="icon-bar top-bar"></span> <span class="icon-bar middle-bar"></span> <span class="icon-bar bottom-bar"></span> </button> <div class="collapse navbar-collapse navbar-collapse-main" id="navbarNav"> <ul class="navbar-nav navbar-menu-list flex-nowrap"> <li class="nav-item "> <a class="nav-link" href="/">关于我 </a> </li> <li class="nav-item active"> <a class="nav-link" href="/blog/">blog </a> </li> <li class="toggle-container"> <button id="light-toggle" type="button" title="Change theme" aria-label="Change color theme"> <i class="fa-half-sun-moon" id="light-toggle-system"></i> <i class="fa-solid fa-moon" id="light-toggle-dark"></i> <i class="fa-solid fa-sun" id="light-toggle-light"></i> </button> </li> </ul> </div> </div> </nav> <progress id="progress" value="0"> <div class="progress-container"> <span class="progress-bar"></span> </div> </progress> </header> <div class="container mt-5" role="main"> <div class="row"> <div class="col-sm-3"> <nav id="toc-sidebar" class="sticky-top toc toc-sidebar" aria-label="Table of contents" data-toc-collapse="expanded" data-toc-collapse-depth=""></nav> </div> <div class="col-sm-9"> <div class="post"> <header class="post-header"> <h1 class="post-title">Linux 应用开发学习笔记</h1> <p class="post-meta"> Created on July 20, 2026 </p> <p class="post-tags"> <a href="/blog/2026"> <i class="fa-solid fa-calendar fa-sm"></i> 2026 </a>   ·   <a href="/blog/tag/linux"> <i class="fa-solid fa-hashtag fa-sm"></i> Linux</a>   <a href="/blog/tag/%E5%BA%94%E7%94%A8%E5%BC%80%E5%8F%91"> <i class="fa-solid fa-hashtag fa-sm"></i> 应用开发</a>   <a href="/blog/tag/gcc"> <i class="fa-solid fa-hashtag fa-sm"></i> GCC</a>   <a href="/blog/tag/makefile"> <i class="fa-solid fa-hashtag fa-sm"></i> Makefile</a>   ·   <a href="/blog/category/linux%E5%AD%A6%E4%B9%A0"> <i class="fa-solid fa-tag fa-sm"></i> Linux学习</a> </p> </header> <article class="post-content"> <div id="markdown-content"> <h2 id="应用开发基础">应用开发基础</h2> <h3 id="gcc编译">GCC编译</h3> <h4 id="编译过程分析">编译过程分析</h4> <p>一个 C/C++文件要经过预处理(preprocessing)、编译(compilation)、汇编(assembly)和链接(linking)等 4 步才能变成可执行文件 。</p> <p>我们使用的代码是<code class="language-plaintext highlighter-rouge">gcc -o bin hello.c</code>，实际上的过程如下：</p> <p><img src="/assets/img/blog/linux-application-development/gcc-compilation-pipeline.png" alt="GCC 编译流程"></p> <p>使用<code class="language-plaintext highlighter-rouge">gcc -o bin hello.c -v</code>观察详细过程如下：</p> <div class="language-text highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Using built-in specs.
+COLLECT_GCC=gcc
+COLLECT_LTO_WRAPPER=/usr/libexec/gcc/aarch64-linux-gnu/13/lto-wrapper
+OFFLOAD_TARGET_NAMES=nvptx-none
+OFFLOAD_TARGET_DEFAULT=1
+Target: aarch64-linux-gnu
+Configured with: ../src/configure -v --with-pkgversion='Ubuntu 13.3.0-6ubuntu2~24.04.1' --with-bugurl=file:///usr/share/doc/gcc-13/README.Bugs --enable-languages=c,ada,c++,go,d,fortran,objc,obj-c++,m2 --prefix=/usr --with-gcc-major-version-only --program-suffix=-13 --program-prefix=aarch64-linux-gnu- --enable-shared --enable-linker-build-id --libexecdir=/usr/libexec --without-included-gettext --enable-threads=posix --libdir=/usr/lib --enable-nls --enable-bootstrap --enable-clocale=gnu --enable-libstdcxx-debug --enable-libstdcxx-time=yes --with-default-libstdcxx-abi=new --enable-libstdcxx-backtrace --enable-gnu-unique-object --disable-libquadmath --disable-libquadmath-support --enable-plugin --enable-default-pie --with-system-zlib --enable-libphobos-checking=release --with-target-system-zlib=auto --enable-objc-gc=auto --enable-multiarch --enable-fix-cortex-a53-843419 --disable-werror --enable-offload-targets=nvptx-none=/build/gcc-13-f9pAEi/gcc-13-13.3.0/debian/tmp-nvptx/usr --enable-offload-defaulted --without-cuda-driver --enable-checking=release --build=aarch64-linux-gnu --host=aarch64-linux-gnu --target=aarch64-linux-gnu --with-build-config=bootstrap-lto-lean --enable-link-serialization=4
+Thread model: posix
+Supported LTO compression algorithms: zlib zstd
+gcc version 13.3.0 (Ubuntu 13.3.0-6ubuntu2~24.04.1)
+COLLECT_GCC_OPTIONS='-o' 'bin' '-v' '-mlittle-endian' '-mabi=lp64' '-dumpdir' 'bin-'
+ /usr/libexec/gcc/aarch64-linux-gnu/13/cc1 -quiet -v -imultiarch aarch64-linux-gnu hello.c -quiet -dumpdir bin- -dumpbase hello.c -dumpbase-ext .c -mlittle-endian -mabi=lp64 -version -fasynchronous-unwind-tables -fstack-protector-strong -Wformat -Wformat-security -fstack-clash-protection -o /tmp/ccCPUi5x.s
+GNU C17 (Ubuntu 13.3.0-6ubuntu2~24.04.1) version 13.3.0 (aarch64-linux-gnu)
+        compiled by GNU C version 13.3.0, GMP version 6.3.0, MPFR version 4.2.1, MPC version 1.3.1, isl version isl-0.26-GMP
+
+GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072
+ignoring nonexistent directory "/usr/local/include/aarch64-linux-gnu"
+ignoring nonexistent directory "/usr/lib/gcc/aarch64-linux-gnu/13/include-fixed/aarch64-linux-gnu"
+ignoring nonexistent directory "/usr/lib/gcc/aarch64-linux-gnu/13/include-fixed"
+ignoring nonexistent directory "/usr/lib/gcc/aarch64-linux-gnu/13/../../../../aarch64-linux-gnu/include"
+#include "..." search starts here:
+#include &lt;...&gt; search starts here:
+ /usr/lib/gcc/aarch64-linux-gnu/13/include
+ /usr/local/include
+ /usr/include/aarch64-linux-gnu
+ /usr/include
+End of search list.
+Compiler executable checksum: af3ce90fa71916e7a8489f94b60f417c
+COLLECT_GCC_OPTIONS='-o' 'bin' '-v' '-mlittle-endian' '-mabi=lp64' '-dumpdir' 'bin-'
+ as -v -EL -mabi=lp64 -o /tmp/cc6QSwBH.o /tmp/ccCPUi5x.s
+GNU assembler version 2.42 (aarch64-linux-gnu) using BFD version (GNU Binutils for Ubuntu) 2.42
+COMPILER_PATH=/usr/libexec/gcc/aarch64-linux-gnu/13/:/usr/libexec/gcc/aarch64-linux-gnu/13/:/usr/libexec/gcc/aarch64-linux-gnu/:/usr/lib/gcc/aarch64-linux-gnu/13/:/usr/lib/gcc/aarch64-linux-gnu/
+LIBRARY_PATH=/usr/lib/gcc/aarch64-linux-gnu/13/:/usr/lib/gcc/aarch64-linux-gnu/13/../../../aarch64-linux-gnu/:/usr/lib/gcc/aarch64-linux-gnu/13/../../../../lib/:/lib/aarch64-linux-gnu/:/lib/../lib/:/usr/lib/aarch64-linux-gnu/:/usr/lib/../lib/:/usr/lib/gcc/aarch64-linux-gnu/13/../../../:/lib/:/usr/lib/
+COLLECT_GCC_OPTIONS='-o' 'bin' '-v' '-mlittle-endian' '-mabi=lp64' '-dumpdir' 'bin.'
+ /usr/libexec/gcc/aarch64-linux-gnu/13/collect2 -plugin /usr/libexec/gcc/aarch64-linux-gnu/13/liblto_plugin.so -plugin-opt=/usr/libexec/gcc/aarch64-linux-gnu/13/lto-wrapper -plugin-opt=-fresolution=/tmp/cc5vlda9.res -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s --build-id --eh-frame-hdr --hash-style=gnu --as-needed -dynamic-linker /lib/ld-linux-aarch64.so.1 -X -EL -maarch64linux --fix-cortex-a53-843419 -pie -z now -z relro -o bin /usr/lib/gcc/aarch64-linux-gnu/13/../../../aarch64-linux-gnu/Scrt1.o /usr/lib/gcc/aarch64-linux-gnu/13/../../../aarch64-linux-gnu/crti.o /usr/lib/gcc/aarch64-linux-gnu/13/crtbeginS.o -L/usr/lib/gcc/aarch64-linux-gnu/13 -L/usr/lib/gcc/aarch64-linux-gnu/13/../../../aarch64-linux-gnu -L/usr/lib/gcc/aarch64-linux-gnu/13/../../../../lib -L/lib/aarch64-linux-gnu -L/lib/../lib -L/usr/lib/aarch64-linux-gnu -L/usr/lib/../lib -L/usr/lib/gcc/aarch64-linux-gnu/13/../../.. /tmp/cc6QSwBH.o -lgcc --push-state --as-needed -lgcc_s --pop-state -lc -lgcc --push-state --as-needed -lgcc_s --pop-state /usr/lib/gcc/aarch64-linux-gnu/13/crtendS.o /usr/lib/gcc/aarch64-linux-gnu/13/../../../aarch64-linux-gnu/crtn.o
+COLLECT_GCC_OPTIONS='-o' 'bin' '-v' '-mlittle-endian' '-mabi=lp64' '-dumpdir' 'bin.'
+</code></pre></div></div> <p>关键点：</p> <p>预处理：把.c转换成.i，编译成.s，关键词为<code class="language-plaintext highlighter-rouge">cc1</code></p> <p>` /usr/libexec/gcc/aarch64-linux-gnu/13/cc1 -quiet -v -imultiarch aarch64-linux-gnu hello.c -o /tmp/ccCPUi5x.s`</p> <p>汇编：把.s转换成.o，关键词为<code class="language-plaintext highlighter-rouge">as</code></p> <p>` as -v -EL -mabi=lp64 -o /tmp/cc6QSwBH.o /tmp/ccCPUi5x.s`</p> <p>链接：把一系列.o链接成一个可执行文件app，关键词为<code class="language-plaintext highlighter-rouge">collect</code></p> <p><code class="language-plaintext highlighter-rouge">COLLECT_GCC_OPTIONS='-o' 'bin' '-v' '-mlittle-endian' '-mabi=lp64' '-dumpdir' 'bin.' /usr/libexec/gcc/aarch64-linux-gnu/13/collect2 -plugin /usr/libexec/gcc/aarch64-linux-gnu/13/liblto_plugin.so -plugin-opt=/usr/libexec/gcc/aarch64-linux-gnu/13/lto-wrapper -plugin-opt=-fresolution=/tmp/cc5vlda9.res -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s --build-id --eh-frame-hdr --hash-style=gnu --as-needed -dynamic-linker /lib/ld-linux-aarch64.so.1 -X -EL -maarch64linux --fix-cortex-a53-843419 -pie -z now -z relro -o bin /usr/lib/gcc/aarch64-linux-gnu/13/../../../aarch64-linux-gnu/Scrt1.o /usr/lib/gcc/aarch64-linux-gnu/13/../../../aarch64-linux-gnu/crti.o /usr/lib/gcc/aarch64-linux-gnu/13/crtbeginS.o -L/usr/lib/gcc/aarch64-linux-gnu/13 -L/usr/lib/gcc/aarch64-linux-gnu/13/../../../aarch64-linux-gnu -L/usr/lib/gcc/aarch64-linux-gnu/13/../../../../lib -L/lib/aarch64-linux-gnu -L/lib/../lib -L/usr/lib/aarch64-linux-gnu -L/usr/lib/../lib -L/usr/lib/gcc/aarch64-linux-gnu/13/../../.. /tmp/cc6QSwBH.o -lgcc --push-state --as-needed -lgcc_s --pop-state -lc -lgcc --push-state --as-needed -lgcc_s --pop-state /usr/lib/gcc/aarch64-linux-gnu/13/crtendS.o /usr/lib/gcc/aarch64-linux-gnu/13/../../../aarch64-linux-gnu/crtn.o COLLECT_GCC_OPTIONS='-o' 'bin' '-v' '-mlittle-endian' '-mabi=lp64' '-dumpdir' 'bin.' </code></p> <p><img src="/assets/img/blog/linux-application-development/gcc-verbose-output.png" alt="GCC 详细编译输出"></p> <h4 id="gcc常用命令">gcc常用命令</h4> <table> <thead> <tr> <th>常用选项</th> <th>描述</th> </tr> </thead> <tbody> <tr> <td>-E</td> <td>预处理，开发过程中想快速确定某个宏可以使用“-E -dM”</td> </tr> <tr> <td>-c</td> <td>把预处理、编译、汇编都做了，但是不链接</td> </tr> <tr> <td>-o</td> <td>指定输出文件</td> </tr> <tr> <td><code class="language-plaintext highlighter-rouge">-I</code></td> <td>指定头文件目录</td> </tr> <tr> <td>-L</td> <td>指定链接时库文件目录</td> </tr> <tr> <td><code class="language-plaintext highlighter-rouge">-l</code></td> <td>指定链接哪一个库文件</td> </tr> </tbody> </table> <p>针对头文件，可以用<code class="language-plaintext highlighter-rouge">&lt; &gt;</code>来指定的目录去查找，也可以用<code class="language-plaintext highlighter-rouge">-I</code> 指定头文件目录；</p> <p>针对库文件，可以用<code class="language-plaintext highlighter-rouge">-l</code>来使用指定链接的库文件，也可以使用<code class="language-plaintext highlighter-rouge">-L</code> 指定链接库文件目录；</p> <blockquote> <p>① 怎么确定交叉编译器中头文件的默认路径？</p> <p>进入交叉编译器的目录里，执行： find -name “stdio.h”，它位于一个“include”目录下的根目录里。这个“include”目录，就是要找的路径。</p> <p>② 怎么自己指定头文件目录？</p> <p>编译时，加上“-I &lt;头文件目录&gt;”这样的选项。头文件目录&gt;</p> <p>③ 怎么确定交叉编译器中库文件的默认路径？</p> <p>进入交叉编译器的目录里，执行： find -name lib，可以得到 xxxx/lib、 xxxx/usr/lib，一般来说这 2 个目录就是要找的路径。</p> <p>如果有很多类似的 lib，进去看看，有很多 so 文件的目录一般就是要找的路径。</p> <p>④ 怎么自己指定库文件目录、指定要用的库文件？</p> <p>编译时，加上“-L &lt;库文件目录&gt;”这样的选项，用来指定库目录；编译时，加上“-labc”这样的选项，用来指定库文件 libabc.so。库文件目录&gt;</p> </blockquote> <p>库可以分为<strong>静态库</strong>和<strong>动态库</strong>，使用方法不一样</p> <h3 id="makefile">Makefile</h3> <p>常用形式如下：</p> <div class="language-text highlighter-rouge"><div class="highlight"><pre class="highlight"><code>目标(target)…: 依赖(prerequiries)…
+&lt;tab&gt;命令(command)
+</code></pre></div></div> <p>如果“依赖文件”比“目标文件”更加新，那么执行“命令”来重新生成“目标文件”。命令被执行的 2 个条件：依赖文件比目标文件新，或是 目标文件还没生成。</p> <h4 id="变量的用法">变量的用法</h4> <div class="language-text highlighter-rouge"><div class="highlight"><pre class="highlight"><code>A = xxx  // 延时变量
+B ?= xxx // 延时变量，只有第一次定义时赋值才成功；如果曾定义过，此赋值无效
+C := xxx // 立即变量
+D += yyy // 如果 D 在前面是延时变量，那么现在它还是延时变量；
+         // 如果 D 在前面是立即变量，那么现在它还是立即变量
+</code></pre></div></div> <h4 id="常用函数">常用函数</h4> <ol> <li> <code class="language-plaintext highlighter-rouge">$(foreach var,list,text)</code> 简单地说，就是 for each var in list, change it to text。 对 list 中的每一个元素，取出来赋给 var，然后把 var 改为 text 所描述的形式。例如：</li> </ol> <div class="language-text highlighter-rouge"><div class="highlight"><pre class="highlight"><code>objs := a.o b.o
+dep_files := $(foreach f, $(objs), .$(f).d) // 最终 dep_files := .a.o.d .b.o.d
+</code></pre></div></div> <ol> <li> <code class="language-plaintext highlighter-rouge">$(wildcard pattern)</code> pattern 所列出的文件是否存在，把存在的文件都列出来</li> </ol> <div class="language-text highlighter-rouge"><div class="highlight"><pre class="highlight"><code>src_files := $( wildcard *.c) // 最终 src_files 中列出了当前目录下的所有.c 文件
+</code></pre></div></div> <ol> <li> <code class="language-plaintext highlighter-rouge">$(filter pattern...,text)</code> 把 text 中符合 pattern 格式的内容， filter(过滤)出来、留下来。 <code class="language-plaintext highlighter-rouge">$(filter-out pattern...,text)</code> 把 text 中符合 pattern 格式的内容， filter-out(过滤)出来、扔掉。</li> </ol> <div class="language-makefile highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">obj-y</span> <span class="o">:=</span> a.o b.o c/ d/
+<span class="nv">DIR</span> <span class="o">:=</span> <span class="p">$(</span>filter %/, <span class="p">$(</span>obj-y<span class="p">))</span> //结果为： c/ d/
+<span class="nv">obj-y</span> <span class="o">:=</span> a.o b.o c/ d/
+<span class="nv">DIR</span> <span class="o">:=</span> <span class="p">$(</span>filter-out %/, <span class="p">$(</span>obj-y<span class="p">))</span> //结果为： a.o b.o
+</code></pre></div></div> <p>4.<code class="language-plaintext highlighter-rouge">$(patsubst pattern, replacement, text)</code> 寻找<code class="language-plaintext highlighter-rouge">text</code>中符合格式<code class="language-plaintext highlighter-rouge">pattern</code>的字，用<code class="language-plaintext highlighter-rouge">replacement</code>替换它们。 <code class="language-plaintext highlighter-rouge">pattern</code>和<code class="language-plaintext highlighter-rouge">replacement</code>中可以使用通配符。 比如：</p> <div class="language-text highlighter-rouge"><div class="highlight"><pre class="highlight"><code>subdir-y := c/ d/
+subdir-y := $(patsubst %/, %, $(subdir-y)) // 结果为： c d
+</code></pre></div></div> <h4 id="makefile实例">Makefile实例</h4> <div class="language-text highlighter-rouge"><div class="highlight"><pre class="highlight"><code>gcc -M c.c // 打印出依赖
+gcc -M -MF c.d c.c // 把依赖写入文件c.d
+gcc -c -o c.o c.c -MD -MF c.d // 编译c.o, 把依赖写入文件c.d
+</code></pre></div></div> <h2 id="文件操作">文件操作</h2> <p>linux系统中，<strong>一切皆文件</strong>，所有的操作，都是通过<strong>文件 IO</strong>来操作的。</p> <h3 id="文件io">文件IO</h3> <p>分为<strong>标准IO</strong>和<strong>系统调用IO</strong>，系统调用IO是针对内核写的，直接操作系统内核，缺点是调用一次就会进入一次内核；标准IO在系统调用IO的基础上进行封装，可以通过编译后运行在不同的unix-like系统和windows下，而且引入了用户buffer，不需要频繁访问内核。 <img src="/assets/img/blog/linux-application-development/io-layering.png" alt="标准 I/O 与系统调用 I/O 层次"></p> <ul> <li>系统调用 I/O：<code class="language-plaintext highlighter-rouge">open/read/write/lseek/close</code> </li> <li>标准 I/O：<code class="language-plaintext highlighter-rouge">fopen/fread/fwrite/flseek/fclose</code> </li> </ul> <h4 id="open和close">open和close</h4> <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include</span> <span class="cpf">&lt;sys/types.h&gt;</span><span class="cp">
+#include</span> <span class="cpf">&lt;sys/stat.h&gt;</span><span class="cp">
+#include</span> <span class="cpf">&lt;fcntl.h&gt;</span><span class="cp">
+</span><span class="kt">int</span> <span class="nf">open</span><span class="p">(</span><span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">pathname</span><span class="p">,</span> <span class="kt">int</span> <span class="n">flags</span><span class="p">);</span>
+<span class="kt">int</span> <span class="nf">open</span><span class="p">(</span><span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">pathname</span><span class="p">,</span> <span class="kt">int</span> <span class="n">flags</span><span class="p">,</span> <span class="n">mode_t</span> <span class="n">mode</span><span class="p">);</span>
+<span class="c1">//关闭已打开的文件</span>
+<span class="kt">int</span> <span class="nf">close</span><span class="p">(</span><span class="kt">int</span> <span class="n">fd</span><span class="p">);</span>
+</code></pre></div></div> <p>具体函数使用查询手册，不在此展开。</p> <h4 id="read和write">read和write</h4> <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include</span> <span class="cpf">&lt;unistd.h&gt;</span><span class="cp">
+</span><span class="kt">ssize_t</span> <span class="nf">read</span><span class="p">(</span><span class="kt">int</span> <span class="n">fd</span><span class="p">,</span> <span class="kt">void</span> <span class="o">*</span><span class="n">buf</span><span class="p">,</span> <span class="kt">size_t</span> <span class="n">count</span><span class="p">);</span>
+<span class="kt">ssize_t</span> <span class="nf">write</span><span class="p">(</span><span class="kt">int</span> <span class="n">fd</span><span class="p">,</span> <span class="k">const</span> <span class="kt">void</span> <span class="o">*</span><span class="n">buf</span><span class="p">,</span> <span class="kt">size_t</span> <span class="n">count</span><span class="p">);</span>
+</code></pre></div></div> <h4 id="dup和dup2">dup和dup2</h4> <p><img src="/assets/img/blog/linux-application-development/dup-file-table.png" alt="dup 与文件描述符表关系"></p> <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include</span> <span class="cpf">&lt;unistd.h&gt;</span><span class="cp">
+</span><span class="kt">int</span> <span class="nf">dup</span><span class="p">(</span><span class="kt">int</span> <span class="n">oldfd</span><span class="p">);</span>
+<span class="kt">int</span> <span class="nf">dup2</span><span class="p">(</span><span class="kt">int</span> <span class="n">oldfd</span><span class="p">,</span> <span class="kt">int</span> <span class="n">newfd</span><span class="p">);</span>
+</code></pre></div></div> <p>针对linux来说，一个fd对应一个file结构体，结构体里有一个<code class="language-plaintext highlighter-rouge">f_pos</code>来对应当前访问到的位置，如果使用open函数打开同一个txt，赋给不同的句柄。</p> <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">fd</span> <span class="o">=</span> <span class="n">open</span><span class="p">(</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="p">...);</span>
+<span class="n">fd2</span> <span class="o">=</span> <span class="n">open</span><span class="p">(</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="p">...);</span>
+</code></pre></div></div> <p>即使打开的是同一个文件1.txt，但是他们对应的句柄不同，使用<code class="language-plaintext highlighter-rouge">read</code>函数时的<code class="language-plaintext highlighter-rouge">f_pos</code>也不同。 此时使用<code class="language-plaintext highlighter-rouge">dup</code></p> <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">fd3</span> <span class="o">=</span> <span class="n">dup</span><span class="p">(</span><span class="n">fd</span><span class="p">);</span>
+</code></pre></div></div> <p>则fd与fd3使用的是同一个file结构体，使用read之后，它们的f_pos都会更新。</p> <p><code class="language-plaintext highlighter-rouge">dup2</code>函数是<code class="language-plaintext highlighter-rouge">dup</code>的更近一步，它的执行过程是：</p> <ol> <li>如果 newfd 已经打开，dup2 会先将其关闭。</li> <li>将 oldfd 复制给 newfd，使两者指向同一个文件表项（共享文件偏移量、状态标志等）。</li> <li>如果 oldfd 与 newfd 相等，则 dup2 什么都不做，直接返回 newfd。</li> </ol> <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp">
+#include</span> <span class="cpf">&lt;string.h&gt;</span><span class="cp">
+#include</span> <span class="cpf">&lt;fcntl.h&gt;</span><span class="cp">
+#include</span> <span class="cpf">&lt;unistd.h&gt;</span><span class="cp">
+</span>
+<span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="o">**</span><span class="n">argv</span><span class="p">){</span>
+    <span class="kt">int</span> <span class="n">fd</span><span class="p">,</span> <span class="n">len</span><span class="p">;</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">argc</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">){</span>
+        <span class="n">printf</span><span class="p">(</span><span class="s">"Usage: %s &lt;file&gt; </span><span class="se">\r\n</span><span class="s">"</span><span class="p">,</span> <span class="n">argv</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span>
+        <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="n">fd</span> <span class="o">=</span> <span class="n">open</span><span class="p">(</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">O_RDWR</span><span class="p">,</span> <span class="mo">0666</span><span class="p">);</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">fd</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">){</span>
+        <span class="n">perror</span><span class="p">(</span><span class="s">"open"</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="k">else</span> <span class="p">{</span>
+        <span class="n">printf</span><span class="p">(</span><span class="s">"fd = %d </span><span class="se">\r\n</span><span class="s">"</span><span class="p">,</span> <span class="n">fd</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="n">dup2</span><span class="p">(</span><span class="n">fd</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">"hello world!</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="c1">// gcc -o dup2 dup2.c</span>
+<span class="c1">// ./dup2 1.txt</span>
+<span class="c1">// 现象为1.txt里的123 -&gt; hello world!</span>
+</code></pre></div></div> <h2 id="字符显示">字符显示</h2> <h3 id="framebuffer">Framebuffer</h3> <p>frame表示帧,buffer表示缓存,framebuffer里保存着一帧图像里的每一个像素点的颜色值.</p> <h4 id="lcd的操作原理">LCD的操作原理:</h4> <ol> <li>驱动程序设置好LCD控制器： 根据LCD的参数设置LCD控制器的时序、信号极性； 根据LCD分辨率、 BPP分配Framebuffer。</li> <li>APP 使用ioctl获得LCD分辨率、 BPP</li> <li>APP 通过 mmap 映射 Framebuffer，在 Framebuffer 中写入数据</li> </ol> <p><img src="/assets/img/blog/linux-application-development/framebuffer-workflow.png" alt="Framebuffer 应用访问流程"></p> <p><img src="/assets/img/blog/linux-application-development/framebuffer-memory-layout.png" alt="Framebuffer 像素内存布局"> 假设<code class="language-plaintext highlighter-rouge">fb_base</code>为mmap映射出的framebuffer内存地址,则<code class="language-plaintext highlighter-rouge">(x,y)</code>的地址计算公式为: <code class="language-plaintext highlighter-rouge">(x,y)起始地址 = fb_base + (xres*bpp/8) * y + x*bpp/8</code></p> <h4 id="像素的颜色表示bpp">像素的颜色表示bpp</h4> <p>像素的颜色使用RGB来表示,不同的BPP格式里使用不同位数的RGB,分为32BPP,24BPP,16BPP</p> <p><img src="/assets/img/blog/linux-application-development/rgb-pixel-formats.png" alt="RGB 像素格式"> 针对32BPP，高八位为透明度，不考虑。 24BPP，对于 24BPP，硬件上为了方便处理，在 Framebuffer 中也是用32 位来表示，效果跟32BPP是一样的。 针对16BPP，可分为RGB565和RGB555.根据RGB565的格式，只保留red中的<strong>高 5 位</strong>、green中的<strong>高 6 位</strong>、blue中的<strong>高 5 位</strong>，组合成一个新的 16 位颜色值。</p> <h3 id="字符编码">字符编码</h3> <h2 id="输入系统">输入系统</h2> <p>驱动程序上报的数据含义的三项重要内容： type：哪类？ 例如EV_KEY，按键类 code：哪个？ 例如KEY_A value：值 0-松开 1-按下 2-长按 除此之外，还上报一个运行时间，每个输入事件 input_event 中都含有发生时间：timeval 表示的是“自系统启动以来过了多少时间”，它是一个结构体，含有“ tv_sec、 tv_usec”两项(即秒、微秒)。</p> <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cm">/*
+ * The event structure itself
+ * Note that __USE_TIME_BITS64 is defined by libc based on
+ * application's request to use 64 bit time_t.
+ */</span>
+
+<span class="k">struct</span> <span class="n">input_event</span> <span class="p">{</span>
+<span class="cp">#if (__BITS_PER_LONG != 32 || !defined(__USE_TIME_BITS64)) &amp;&amp; !defined(__KERNEL__)
+</span>	<span class="k">struct</span> <span class="n">timeval</span> <span class="n">time</span><span class="p">;</span>
+<span class="cp">#define input_event_sec time.tv_sec
+#define input_event_usec time.tv_usec
+#else
+</span>	<span class="n">__kernel_ulong_t</span> <span class="n">__sec</span><span class="p">;</span>
+<span class="cp">#if defined(__sparc__) &amp;&amp; defined(__arch64__)
+</span>	<span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">__usec</span><span class="p">;</span>
+	<span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">__pad</span><span class="p">;</span>
+<span class="cp">#else
+</span>	<span class="n">__kernel_ulong_t</span> <span class="n">__usec</span><span class="p">;</span>
+<span class="cp">#endif
+#define input_event_sec  __sec
+#define input_event_usec __usec
+#endif
+</span>	<span class="n">__u16</span> <span class="n">type</span><span class="p">;</span>
+	<span class="n">__u16</span> <span class="n">code</span><span class="p">;</span>
+	<span class="n">__s32</span> <span class="n">value</span><span class="p">;</span>
+<span class="p">};</span>
+</code></pre></div></div> <h3 id="typecode和value">type、code和value</h3> <p><strong>type</strong>：表示哪类事件，比如 EV_KEY 表示按键类、 EV_REL表示相对位移(比如鼠标)， EV_ABS 表示绝对位置(比如触摸屏),如下：</p> <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cm">/*
+ * Event types
+ */</span>
+<span class="cp">#define EV_SYN			0x00
+#define EV_KEY			0x01
+#define EV_REL			0x02
+#define EV_ABS			0x03
+#define EV_MSC			0x04
+#define EV_SW			0x05
+#define EV_LED			0x11
+#define EV_SND			0x12
+#define EV_REP			0x14
+#define EV_FF			0x15
+#define EV_PWR			0x16
+#define EV_FF_STATUS		0x17
+#define EV_MAX			0x1f
+#define EV_CNT			(EV_MAX+1)
+</span></code></pre></div></div> <p><strong>code</strong>：表示该类事件下的哪一个事件，比如对于EV_KEY(按键)类事件，它表示键盘。键盘上有很多按键，比如数字键 1、 2、 3，字母键 A、 B、 C 里等。所以可以这些事件：</p> <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cm">/*
+ * Keys and buttons
+ *
+ * Most of the keys/buttons are modeled after USB HUT 1.12
+ * (see http://www.usb.org/developers/hidpage).
+ * Abbreviations in the comments:
+ * AC - Application Control
+ * AL - Application Launch Button
+ * SC - System Control
+ */</span>
+<span class="cp">#define KEY_RESERVED		0
+#define KEY_ESC			1
+#define KEY_1			2
+#define KEY_2			3
+#define KEY_3			4
+#define KEY_4			5
+#define KEY_5			6
+#define KEY_6			7
+#define KEY_7			8
+#define KEY_8			9
+#define KEY_9			10
+#define KEY_0			11
+#define KEY_MINUS		12
+#define KEY_EQUAL		13
+#define KEY_BACKSPACE		14
+#define KEY_TAB			15
+#define KEY_Q			16
+</span><span class="err">···</span> <span class="c1">//不在此一一列举，具体查看/usr/include/linux/input-event-codes.h</span>
+</code></pre></div></div> <p>对于触摸屏，它提供的是绝对位置信息，有 X 方向、 Y 方向，还有压力值。</p> <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cm">/*
+ * Absolute axes
+ */</span>
+
+<span class="cp">#define ABS_X			0x00
+#define ABS_Y			0x01
+#define ABS_Z			0x02
+</span></code></pre></div></div> <p><strong>value</strong>：表示事件值，对于按键，它的 value 可以是 0(表示按键被按下)、 1(表示按键被松开)、2(表示长按)；对于触摸屏，它的 value 就是坐标值、压力值。</p> <p><strong>事件之间的界限：</strong> type、code、value值全未0，表示一个读完一个同步事件的所有数据。</p> <p><strong>事件举例：</strong></p> <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">hexdump</span> <span class="o">/</span><span class="n">dev</span><span class="o">/</span><span class="n">input</span><span class="o">/</span><span class="n">mouse0</span>
+<span class="mo">0000000</span> <span class="mo">010</span><span class="mi">8</span> <span class="mi">0800</span> <span class="mo">0001</span> <span class="mo">010</span><span class="mi">8</span> <span class="mi">0800</span> <span class="mo">0001</span> <span class="mo">010</span><span class="mi">8</span> <span class="mi">0800</span>
+<span class="mo">0000010</span> <span class="mo">0001</span> <span class="mo">010</span><span class="mi">8</span> <span class="mi">0800</span> <span class="mo">0001</span> <span class="mo">010</span><span class="mi">8</span> <span class="mi">0800</span> <span class="mo">0001</span> <span class="mo">010</span><span class="mi">8</span>
+<span class="mo">0000020</span> <span class="mi">0800</span> <span class="mo">0001</span> <span class="mo">010</span><span class="mi">8</span> <span class="mi">0800</span> <span class="mo">0001</span> <span class="mo">010</span><span class="mi">8</span> <span class="mi">0800</span> <span class="mo">0001</span>
+<span class="mo">0000030</span> <span class="mo">010</span><span class="mi">8</span> <span class="mi">0800</span> <span class="mo">0001</span> <span class="mo">010</span><span class="mi">8</span> <span class="mi">2800</span> <span class="n">ff00</span> <span class="mo">010</span><span class="mi">8</span> <span class="mi">0800</span>
+<span class="mo">0000040</span> <span class="mo">0001</span> <span class="mo">010</span><span class="mi">8</span> <span class="mi">0800</span> <span class="mo">0001</span> <span class="mo">000</span><span class="mi">8</span> <span class="mi">0801</span> <span class="mo">0001</span> <span class="mo">010</span><span class="mi">8</span>
+<span class="mo">0000050</span> <span class="mi">0800</span> <span class="mo">0001</span> <span class="mo">010</span><span class="mi">8</span> <span class="mi">0800</span> <span class="mo">0001</span> <span class="mo">000</span><span class="mi">8</span> <span class="mi">1801</span> <span class="mo">00</span><span class="n">ff</span>
+<span class="mo">0000060</span> <span class="n">ff18</span> <span class="mi">1800</span> <span class="mo">00</span><span class="n">ff</span> <span class="n">ff18</span> <span class="mi">1800</span> <span class="mo">00</span><span class="n">ff</span> <span class="n">ff18</span> <span class="mi">1800</span>
+<span class="mo">0000070</span> <span class="mo">00</span><span class="n">ff</span> <span class="n">ff18</span> <span class="mi">1800</span> <span class="mo">00</span><span class="n">ff</span> <span class="n">ff18</span> <span class="mi">1800</span> <span class="mo">00</span><span class="n">ff</span> <span class="n">ff18</span>
+<span class="mo">00000</span><span class="mi">80</span> <span class="mi">1801</span> <span class="mo">00</span><span class="n">ff</span> <span class="n">ff18</span> <span class="mi">1800</span> <span class="mo">00</span><span class="n">fe</span> <span class="n">ff18</span> <span class="mi">1800</span> <span class="mo">01</span><span class="n">ff</span>
+<span class="mo">00000</span><span class="mi">90</span> <span class="n">ff18</span> <span class="mi">1800</span> <span class="mo">00</span><span class="n">ff</span> <span class="n">ff18</span> <span class="mi">1800</span> <span class="mo">00</span><span class="n">ff</span> <span class="n">ff18</span> <span class="mi">1800</span>
+<span class="mo">00000</span><span class="n">a0</span> <span class="mo">00</span><span class="n">ff</span> <span class="n">fe18</span> <span class="mi">1800</span> <span class="mo">00</span><span class="n">ff</span> <span class="n">ff18</span> <span class="mi">1800</span> <span class="mo">00</span><span class="n">ff</span> <span class="n">ff18</span>
+<span class="mo">00000</span><span class="n">b0</span> <span class="mi">1800</span> <span class="mo">00</span><span class="n">ff</span> <span class="n">ff18</span> <span class="mi">1800</span> <span class="mo">00</span><span class="n">ff</span> <span class="n">ff18</span> <span class="mi">0900</span> <span class="mo">0000</span>
+<span class="mo">00000</span><span class="n">c0</span> <span class="mo">000</span><span class="mi">8</span> <span class="mi">0</span><span class="n">a00</span> <span class="mo">0000</span> <span class="mo">000</span><span class="mi">8</span> <span class="mi">0900</span> <span class="mo">0000</span> <span class="mo">000</span><span class="mi">8</span> <span class="mi">0800</span>
+<span class="mo">00000</span><span class="n">d0</span> <span class="mo">0100</span> <span class="mo">010</span><span class="mi">8</span> <span class="mi">0801</span> <span class="mo">0101</span> <span class="mo">000</span><span class="mi">8</span> <span class="mi">0801</span> <span class="mo">0101</span> <span class="mo">010</span><span class="mi">8</span>
+<span class="mf">00000e0</span> <span class="mi">0801</span> <span class="mo">0101</span> <span class="mo">010</span><span class="mi">8</span> <span class="mi">0801</span> <span class="mo">0001</span> <span class="mo">020</span><span class="mi">8</span> <span class="mi">0800</span> <span class="mo">0001</span>
+<span class="mo">00000</span><span class="n">f0</span> <span class="mo">010</span><span class="mi">8</span> <span class="mi">0800</span> <span class="mo">0002</span> <span class="mo">012</span><span class="mi">8</span> <span class="mi">08</span><span class="n">ff</span> <span class="mo">0001</span> <span class="mo">010</span><span class="mi">8</span> <span class="mi">0800</span>
+<span class="mo">0000100</span> <span class="mo">0002</span> <span class="mo">020</span><span class="mi">8</span> <span class="mi">0800</span> <span class="mo">0001</span> <span class="mo">020</span><span class="mi">8</span> <span class="mi">0800</span> <span class="mo">0001</span> <span class="mo">010</span><span class="mi">8</span>
+<span class="mo">0000110</span> <span class="mi">0800</span> <span class="mo">0001</span> <span class="mo">020</span><span class="mi">8</span> <span class="mi">0800</span> <span class="mo">0001</span> <span class="mo">010</span><span class="mi">8</span> <span class="mi">0800</span> <span class="mo">0001</span>
+<span class="c1">//序号      秒       微秒    type code   value</span>
+</code></pre></div></div> <h3 id="调试技巧">调试技巧</h3> <ul> <li>查看所有输入设备节点名</li> </ul> <div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">ls</span> /dev/input/<span class="k">*</span> <span class="nt">-l</span>
+</code></pre></div></div> <ul> <li>查找设备节点对应的硬件</li> </ul> <div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">cat</span> /proc/bus/input/devices
+</code></pre></div></div> <p><img src="/assets/img/blog/linux-application-development/input-device-bitmap.png" alt="Linux 输入设备能力位图"> 重点关注 <strong>B:</strong> 位图</p> <p>举例 <code class="language-plaintext highlighter-rouge">EV = 17</code> ,二进制为<code class="language-plaintext highlighter-rouge">0001 0111</code>，查EV表，得出该设备具有<code class="language-plaintext highlighter-rouge">EV_SYN</code> <code class="language-plaintext highlighter-rouge">EV_KEY</code> <code class="language-plaintext highlighter-rouge">EV_REL</code> <code class="language-plaintext highlighter-rouge">EV_MSC</code> 四类事件。以下位图解析同理。</p> <h3 id="系统的四种机制">系统的四种机制</h3> <h4 id="查询方式">查询方式</h4> <p>APP 调用 open 函数时，传入“ O_NONBLOCK”表示“非阻塞”。 APP 调用 read 函数读取数据时，如果驱动程序中有数据，那么 APP 的 read 函数会返回数据，否则也会立刻返回错误。</p> <h4 id="休眠-唤醒方式">休眠-唤醒方式</h4> <p>APP 调用 open 函数时，不传入“O_NONBLOCK”。 APP 调用 read 函数读取数据时，如果驱动程序中有数据，那么 APP 的 read函数会返回数据；否则 APP 就会在内核态休眠，当有数据时驱动程序会把 APP唤醒，read 函数恢复执行并返回数据给 APP。</p> <h4 id="pollselect方式">POLL/SELECT方式</h4> <p>两种方式机制一样，只是调用接口不一样。</p> <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include</span> <span class="cpf">&lt;poll.h&gt;</span><span class="cp">
+</span><span class="kt">int</span> <span class="nf">poll</span><span class="p">(</span><span class="k">struct</span> <span class="n">pollfd</span> <span class="o">*</span><span class="n">fds</span><span class="p">,</span> <span class="n">nfds_t</span> <span class="n">nfds</span><span class="p">,</span> <span class="kt">int</span> <span class="n">timeout</span><span class="p">);</span>
+
+<span class="k">struct</span> <span class="n">pollfd</span> <span class="p">{</span>
+    <span class="kt">int</span>   <span class="n">fd</span><span class="p">;</span>         <span class="cm">/* file descriptor */</span>
+    <span class="kt">short</span> <span class="n">events</span><span class="p">;</span>     <span class="cm">/* requested events */</span>
+    <span class="kt">short</span> <span class="n">revents</span><span class="p">;</span>    <span class="cm">/* returned events */</span>
+<span class="p">};</span>
+<span class="c1">//-----------------------------------------------------</span>
+<span class="cp">#include</span> <span class="cpf">&lt;sys/select.h&gt;</span><span class="cp">
+</span>
+<span class="k">typedef</span> <span class="cm">/* ... */</span> <span class="n">fd_set</span><span class="p">;</span>
+
+<span class="kt">int</span> <span class="nf">select</span><span class="p">(</span><span class="kt">int</span> <span class="n">nfds</span><span class="p">,</span> <span class="n">fd_set</span> <span class="o">*</span><span class="n">_Nullable</span> <span class="kr">restrict</span> <span class="n">readfds</span><span class="p">,</span>
+            <span class="n">fd_set</span> <span class="o">*</span><span class="n">_Nullable</span> <span class="kr">restrict</span> <span class="n">writefds</span><span class="p">,</span>
+            <span class="n">fd_set</span> <span class="o">*</span><span class="n">_Nullable</span> <span class="kr">restrict</span> <span class="n">exceptfds</span><span class="p">,</span>
+            <span class="k">struct</span> <span class="n">timeval</span> <span class="o">*</span><span class="n">_Nullable</span> <span class="kr">restrict</span> <span class="n">timeout</span><span class="p">);</span>
+
+<span class="cm">/*
+nfds：监控的所有文件描述符中的最大值 加 1（例如你监控 fd=3, 5, 8，则 nfds 为 9）。
+readfds：监控“可读”事件的集合。
+writefds：监控“可写”事件的集合（通常传 NULL）。
+exceptfds：监控“异常”事件的集合（通常传 NULL）。
+timeout：超时时间。如果传 NULL 则无限等待；如果时间设为 0 则立即返回（轮询）。
+*/</span>
+
+<span class="c1">//fd_set 是一个位图（Bitmask），你不能直接操作它，必须使用以下四个宏</span>
+<span class="kt">void</span> <span class="nf">FD_CLR</span><span class="p">(</span><span class="kt">int</span> <span class="n">fd</span><span class="p">,</span> <span class="n">fd_set</span> <span class="o">*</span><span class="n">set</span><span class="p">);</span> <span class="c1">//将一个 fd 移出集合</span>
+<span class="kt">int</span>  <span class="nf">FD_ISSET</span><span class="p">(</span><span class="kt">int</span> <span class="n">fd</span><span class="p">,</span> <span class="n">fd_set</span> <span class="o">*</span><span class="n">set</span><span class="p">);</span> <span class="c1">//检查某个 fd 是否就绪（通常在 select 返回后使用）。</span>
+<span class="kt">void</span> <span class="nf">FD_SET</span><span class="p">(</span><span class="kt">int</span> <span class="n">fd</span><span class="p">,</span> <span class="n">fd_set</span> <span class="o">*</span><span class="n">set</span><span class="p">);</span> <span class="c1">//将一个 fd 加入集合</span>
+<span class="kt">void</span> <span class="nf">FD_ZERO</span><span class="p">(</span><span class="n">fd_set</span> <span class="o">*</span><span class="n">set</span><span class="p">);</span> <span class="c1">//清空集合</span>
+</code></pre></div></div> <p>原理类似于定一个闹钟，作用是：如果驱动内有数据，则立即返回；如果驱动内没有数据，则进入休眠模式，在休眠期间如果驱动内有数据了，就立即唤醒APP，然后返回数据；如果在超时时间内一直没有数据，则返回timeout。 APP可以根据返回值判断返回的原因并进行处理。 poll和select函数可以同时监测多个事件。 <img src="/assets/img/blog/linux-application-development/select-poll-workflow.png" alt="select 与 poll 等待流程"></p> <p>具体实现：</p> <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include</span> <span class="cpf">&lt;poll.h&gt;</span><span class="cp">
+</span>
+<span class="k">struct</span> <span class="n">pollfd</span> <span class="n">fds</span><span class="p">[</span><span class="mi">1</span><span class="p">];</span>
+<span class="n">nfds_t</span> <span class="n">nfds</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> <span class="c1">//fd的数量</span>
+
+<span class="err">···</span>
+
+<span class="k">while</span><span class="p">(</span><span class="mi">1</span><span class="p">){</span>
+    <span class="n">fds</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="n">fd</span> <span class="o">=</span> <span class="n">fd</span><span class="p">;</span>
+    <span class="n">fds</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="n">events</span> <span class="o">=</span> <span class="n">POLLIN</span><span class="p">;</span> <span class="c1">//有数据可读</span>
+    <span class="n">fds</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="n">revents</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="n">ret</span> <span class="o">=</span> <span class="n">poll</span><span class="p">(</span><span class="n">fds</span><span class="p">,</span> <span class="n">nfds</span><span class="p">,</span> <span class="mi">5000</span><span class="p">);</span> <span class="c1">//5000ms超时时间</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">ret</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="p">){</span>
+        <span class="k">if</span><span class="p">(</span><span class="n">fds</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="n">revents</span> <span class="o">==</span> <span class="n">POLLIN</span><span class="p">){</span> <span class="c1">//返回有数据可读</span>
+            <span class="k">while</span><span class="p">(</span><span class="n">read</span><span class="p">(</span><span class="n">fds</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="n">fd</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">event</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">event</span><span class="p">))</span> <span class="o">==</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">event</span><span class="p">)){</span>
+                <span class="n">printf</span><span class="p">(</span><span class="s">"get event: type= 0x%x, code= 0x%x, value= 0x%x </span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">event</span><span class="p">.</span><span class="n">type</span><span class="p">,</span> <span class="n">event</span><span class="p">.</span><span class="n">code</span><span class="p">,</span> <span class="n">event</span><span class="p">.</span><span class="n">value</span><span class="p">);</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+    <span class="k">else</span> <span class="k">if</span><span class="p">(</span><span class="n">ret</span> <span class="o">==</span> <span class="mi">0</span><span class="p">){</span>
+        <span class="n">printf</span><span class="p">(</span><span class="s">"time out </span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="k">else</span><span class="p">{</span>
+        <span class="n">printf</span><span class="p">(</span><span class="s">"err poll </span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div> <p><strong>扩展1：使用 poll 函数监测多个输入设备</strong></p> <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">while</span><span class="p">(</span><span class="mi">1</span><span class="p">){</span>
+    <span class="n">fds</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="n">fd</span> <span class="o">=</span> <span class="n">fd</span><span class="p">;</span>
+    <span class="n">fds</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="n">events</span> <span class="o">=</span> <span class="n">POLLIN</span><span class="p">;</span>
+    <span class="n">fds</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="n">revents</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="n">fds</span><span class="p">[</span><span class="mi">1</span><span class="p">].</span><span class="n">fd</span> <span class="o">=</span> <span class="n">fd1</span><span class="p">;</span>
+    <span class="n">fds</span><span class="p">[</span><span class="mi">1</span><span class="p">].</span><span class="n">events</span> <span class="o">=</span> <span class="n">POLLIN</span><span class="p">;</span>
+    <span class="n">fds</span><span class="p">[</span><span class="mi">1</span><span class="p">].</span><span class="n">revents</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="n">ret</span> <span class="o">=</span> <span class="n">poll</span><span class="p">(</span><span class="n">fds</span><span class="p">,</span> <span class="n">nfds</span><span class="p">,</span> <span class="mi">5000</span><span class="p">);</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">ret</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="p">){</span>
+        <span class="k">if</span><span class="p">(</span><span class="n">fds</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="n">revents</span> <span class="o">&amp;</span> <span class="n">POLLIN</span><span class="p">){</span>
+            <span class="k">while</span><span class="p">(</span><span class="n">read</span><span class="p">(</span><span class="n">fds</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="n">fd</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">event</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">event</span><span class="p">))</span> <span class="o">==</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">event</span><span class="p">)){</span>
+                <span class="n">printf</span><span class="p">(</span><span class="s">"get event0: type= 0x%x, code= 0x%x, value= 0x%x </span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">event</span><span class="p">.</span><span class="n">type</span><span class="p">,</span> <span class="n">event</span><span class="p">.</span><span class="n">code</span><span class="p">,</span> <span class="n">event</span><span class="p">.</span><span class="n">value</span><span class="p">);</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+        <span class="k">if</span><span class="p">(</span><span class="n">fds</span><span class="p">[</span><span class="mi">1</span><span class="p">].</span><span class="n">revents</span> <span class="o">&amp;</span> <span class="n">POLLIN</span><span class="p">){</span>
+            <span class="k">while</span><span class="p">(</span><span class="n">read</span><span class="p">(</span><span class="n">fds</span><span class="p">[</span><span class="mi">1</span><span class="p">].</span><span class="n">fd</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">event</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">event</span><span class="p">))</span> <span class="o">==</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">event</span><span class="p">)){</span>
+                <span class="n">printf</span><span class="p">(</span><span class="s">"get event6: type= 0x%x, code= 0x%x, value= 0x%x </span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">event</span><span class="p">.</span><span class="n">type</span><span class="p">,</span> <span class="n">event</span><span class="p">.</span><span class="n">code</span><span class="p">,</span> <span class="n">event</span><span class="p">.</span><span class="n">value</span><span class="p">);</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+    <span class="k">else</span> <span class="k">if</span><span class="p">(</span><span class="n">ret</span> <span class="o">==</span> <span class="mi">0</span><span class="p">){</span>
+        <span class="n">printf</span><span class="p">(</span><span class="s">"time out </span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="k">else</span><span class="p">{</span>
+        <span class="n">printf</span><span class="p">(</span><span class="s">"err poll </span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div> <p><strong>拓展2：使用SELECT检测设备</strong></p> <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cm">/*
+select() 的工作方式比较“笨”：你把集合交给内核，内核观察一圈后，把没准备好的 fd 从集合里剔除，然后返回。
+
+准备：清空 fd_set，把需要监控的 fd 全丢进去。
+
+调用：执行 select()，进程进入睡眠。
+
+返回：当有数据时，内核唤醒进程。
+
+轮询检查：你需要用 FD_ISSET 挨个问一遍：“是你准备好了吗？”
+*/</span>
+<span class="kt">int</span> <span class="n">retval</span><span class="p">;</span>
+<span class="n">fd_set</span> <span class="n">rfds</span><span class="p">;</span>
+<span class="k">struct</span> <span class="n">timeval</span> <span class="n">tv</span><span class="p">;</span>
+
+<span class="err">···</span>
+
+<span class="k">while</span><span class="p">(</span><span class="mi">1</span><span class="p">){</span>
+    <span class="n">FD_ZERO</span><span class="p">(</span><span class="o">&amp;</span><span class="n">rfds</span><span class="p">);</span>
+    <span class="n">FD_SET</span><span class="p">(</span><span class="n">fd</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">rfds</span><span class="p">);</span>
+    <span class="n">tv</span><span class="p">.</span><span class="n">tv_sec</span> <span class="o">=</span> <span class="mi">5</span><span class="p">;</span> <span class="c1">//5分钟</span>
+    <span class="n">tv</span><span class="p">.</span><span class="n">tv_usec</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+
+    <span class="n">retval</span> <span class="o">=</span> <span class="n">select</span><span class="p">(</span><span class="n">fd</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">rfds</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">tv</span><span class="p">);</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">retval</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="p">){</span>
+        <span class="n">printf</span><span class="p">(</span><span class="s">"err select </span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+        <span class="k">break</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">else</span> <span class="k">if</span><span class="p">(</span><span class="n">retval</span> <span class="o">==</span> <span class="mi">0</span><span class="p">){</span>
+        <span class="n">printf</span><span class="p">(</span><span class="s">"time out </span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="k">else</span><span class="p">{</span>
+        <span class="k">if</span><span class="p">(</span><span class="n">FD_ISSET</span><span class="p">(</span><span class="n">fd</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">rfds</span><span class="p">)){</span>
+            <span class="k">while</span><span class="p">(</span><span class="n">read</span><span class="p">(</span><span class="n">fd</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">event</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">event</span><span class="p">))</span> <span class="o">==</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">event</span><span class="p">)){</span>
+                <span class="n">printf</span><span class="p">(</span><span class="s">"get event: type= 0x%x, code= 0x%x, value= 0x%x </span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">event</span><span class="p">.</span><span class="n">type</span><span class="p">,</span> <span class="n">event</span><span class="p">.</span><span class="n">code</span><span class="p">,</span> <span class="n">event</span><span class="p">.</span><span class="n">value</span><span class="p">);</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div> <h4 id="异步方式">异步方式</h4> <p>所谓同步，就是“你慢我等你”。 那么异步就是：你慢那你就自己玩，我做自己的事去了，有情况再通知我。 所谓异步通知，就是 APP 可以忙自己的事，当驱动程序用数据时它会主动给APP 发信号，这会导致 APP 执行信号处理函数。</p> <p>流程如下：</p> <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">//编写信号处理函数：</span>
+<span class="k">static</span> <span class="kt">void</span> <span class="nf">sig_func</span><span class="p">(</span><span class="kt">int</span> <span class="n">sig</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="kt">int</span> <span class="n">val</span><span class="p">;</span>
+    <span class="n">read</span><span class="p">(</span><span class="n">fd</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">val</span><span class="p">,</span> <span class="mi">4</span><span class="p">);</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">"get button : 0x%x</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">val</span><span class="p">);</span>
+<span class="p">}</span>
+<span class="c1">//注册信号处理函数：</span>
+<span class="n">signal</span><span class="p">(</span><span class="n">SIGIO</span><span class="p">,</span> <span class="n">sig_func</span><span class="p">);</span>
+<span class="c1">//打开驱动：</span>
+<span class="n">fd</span> <span class="o">=</span> <span class="n">open</span><span class="p">(</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">O_RDWR</span><span class="p">);</span>
+<span class="c1">//把进程 ID 告诉驱动：</span>
+<span class="n">fcntl</span><span class="p">(</span><span class="n">fd</span><span class="p">,</span> <span class="n">F_SETOWN</span><span class="p">,</span> <span class="n">getpid</span><span class="p">());</span>
+<span class="c1">//使能驱动的 FASYNC 功能：</span>
+<span class="n">flags</span> <span class="o">=</span> <span class="n">fcntl</span><span class="p">(</span><span class="n">fd</span><span class="p">,</span> <span class="n">F_GETFL</span><span class="p">);</span>
+<span class="n">fcntl</span><span class="p">(</span><span class="n">fd</span><span class="p">,</span> <span class="n">F_SETFL</span><span class="p">,</span> <span class="n">flags</span> <span class="o">|</span> <span class="n">FASYNC</span><span class="p">);</span>
+</code></pre></div></div> <h2 id="网络系统">网络系统</h2> <p>TCP和UDP的不同点在于TCP需要进行三次握手，是可靠连接。</p> <h3 id="tcp">TCP</h3> <blockquote> <p>[!NOTE] 在嵌入式 Linux 环境下进行 TCP 通信，本质上是基于 Socket（套接字）编程。TCP 是一种面向连接的、可靠的传输层协议，通信过程可以概括为“三次握手建立连接 -&gt; 数据传输 -&gt; 四次挥手释放连接”。</p> <p>TCP 通信分为 服务器端（Server） 和 客户端（Client） 两个角色，其执行逻辑如下： 服务器端：创建 Socket -&gt; 绑定地址 (bind) -&gt; 监听 (listen) -&gt; 等待连接 (accept) -&gt; 接收/发送数据 -&gt; 关闭连接。 客户端：创建 Socket -&gt; 发起连接 (connect) -&gt; 发送/接收数据 -&gt; 关闭连接。</p> <p><strong>server.c</strong></p> </blockquote> <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp">
+#include</span> <span class="cpf">&lt;sys/socket.h&gt;</span><span class="cp">
+#include</span> <span class="cpf">&lt;errno.h&gt;</span><span class="cp">
+#include</span> <span class="cpf">&lt;netinet/in.h&gt;</span><span class="cp">
+#include</span> <span class="cpf">&lt;string.h&gt;</span><span class="cp">
+#include</span> <span class="cpf">&lt;sys/socket.h&gt;</span><span class="cp">
+#include</span> <span class="cpf">&lt;netinet/in.h&gt;</span><span class="cp">
+#include</span> <span class="cpf">&lt;arpa/inet.h&gt;</span><span class="cp">
+#include</span> <span class="cpf">&lt;unistd.h&gt;</span><span class="cp">
+#include</span> <span class="cpf">&lt;signal.h&gt;</span><span class="cp">
+</span>
+<span class="cm">/*
+*  创建 Socket -&gt; 绑定地址 (bind) -&gt; 监听 (listen) -&gt; 等待连接 (accept) -&gt; 接收/发送数据 -&gt; 关闭连接
+*/</span>
+
+<span class="cp">#define Server_PORT 8888
+#define BACKLOG     10
+</span>
+
+<span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="o">**</span><span class="n">argv</span><span class="p">){</span>
+    <span class="kt">int</span> <span class="n">SocketServer</span><span class="p">;</span>
+    <span class="kt">int</span> <span class="n">SocketClient</span><span class="p">;</span>
+    <span class="kt">int</span> <span class="n">iRet</span><span class="p">;</span>
+    <span class="k">struct</span> <span class="n">sockaddr_in</span> <span class="n">SocketServerAddr</span><span class="p">;</span>
+    <span class="k">struct</span> <span class="n">sockaddr_in</span> <span class="n">SocketClientAddr</span><span class="p">;</span>
+    <span class="kt">int</span> <span class="n">iAddrLen</span><span class="p">;</span>
+	<span class="kt">int</span> <span class="n">iClientNum</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+    <span class="kt">unsigned</span> <span class="kt">char</span> <span class="n">RecVbuf</span><span class="p">[</span><span class="mi">1000</span><span class="p">];</span>
+    <span class="kt">int</span> <span class="n">iRecvLen</span><span class="p">;</span>
+
+    <span class="n">signal</span><span class="p">(</span><span class="n">SIGCHLD</span><span class="p">,</span> <span class="n">SIG_IGN</span><span class="p">);</span>
+    <span class="c1">//先建立一个socket</span>
+    <span class="n">SocketServer</span> <span class="o">=</span> <span class="n">socket</span><span class="p">(</span><span class="n">AF_INET</span><span class="p">,</span> <span class="n">SOCK_STREAM</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">SocketServer</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">){</span>
+        <span class="n">perror</span><span class="p">(</span><span class="s">"socket"</span><span class="p">);</span>
+        <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="c1">//绑定地址</span>
+    <span class="n">SocketServerAddr</span><span class="p">.</span><span class="n">sin_family</span> <span class="o">=</span> <span class="n">AF_INET</span><span class="p">;</span>
+    <span class="n">SocketServerAddr</span><span class="p">.</span><span class="n">sin_addr</span><span class="p">.</span><span class="n">s_addr</span> <span class="o">=</span> <span class="n">htonl</span><span class="p">(</span><span class="n">INADDR_ANY</span><span class="p">);</span>
+    <span class="n">SocketServerAddr</span><span class="p">.</span><span class="n">sin_port</span> <span class="o">=</span> <span class="n">htons</span><span class="p">(</span><span class="n">Server_PORT</span><span class="p">);</span>
+    <span class="n">memset</span><span class="p">(</span><span class="n">SocketServerAddr</span><span class="p">.</span><span class="n">sin_zero</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">8</span><span class="p">);</span>
+
+    <span class="n">iRet</span> <span class="o">=</span> <span class="n">bind</span><span class="p">(</span><span class="n">SocketServer</span><span class="p">,</span> <span class="p">(</span><span class="k">const</span> <span class="k">struct</span> <span class="n">sockaddr</span> <span class="o">*</span><span class="p">)</span><span class="o">&amp;</span><span class="n">SocketServerAddr</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">sockaddr</span><span class="p">));</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">iRet</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">){</span>
+        <span class="n">perror</span><span class="p">(</span><span class="s">"bind"</span><span class="p">);</span>
+        <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="c1">//开始监听</span>
+    <span class="n">iRet</span> <span class="o">=</span> <span class="n">listen</span><span class="p">(</span><span class="n">SocketServer</span><span class="p">,</span> <span class="n">BACKLOG</span><span class="p">);</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">iRet</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">){</span>
+        <span class="n">perror</span><span class="p">(</span><span class="s">"listen"</span><span class="p">);</span>
+        <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="k">while</span><span class="p">(</span><span class="mi">1</span><span class="p">){</span>
+        <span class="n">iAddrLen</span>  <span class="o">=</span> <span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">sockaddr</span><span class="p">);</span>
+        <span class="c1">//等待连接 (accept)</span>
+        <span class="n">SocketClient</span> <span class="o">=</span> <span class="n">accept</span><span class="p">(</span><span class="n">SocketServer</span><span class="p">,</span> <span class="p">(</span><span class="k">struct</span> <span class="n">sockaddr</span> <span class="o">*</span><span class="p">)</span><span class="o">&amp;</span><span class="n">SocketClientAddr</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">iAddrLen</span><span class="p">);</span>
+        <span class="k">if</span><span class="p">(</span><span class="n">SocketClient</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">){</span>
+            <span class="n">iClientNum</span><span class="o">++</span><span class="p">;</span>
+            <span class="n">printf</span><span class="p">(</span><span class="s">"Get connect from client %d : %s</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span>  <span class="n">iClientNum</span><span class="p">,</span> <span class="n">inet_ntoa</span><span class="p">(</span><span class="n">SocketClientAddr</span><span class="p">.</span><span class="n">sin_addr</span><span class="p">));</span>
+            <span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="n">fork</span><span class="p">()){</span> <span class="c1">//创建子进程</span>
+                <span class="k">while</span><span class="p">(</span><span class="mi">1</span><span class="p">){</span>
+                    <span class="n">iRecvLen</span> <span class="o">=</span> <span class="n">recv</span><span class="p">(</span><span class="n">SocketClient</span><span class="p">,</span> <span class="n">RecVbuf</span><span class="p">,</span> <span class="mi">999</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+                    <span class="k">if</span><span class="p">(</span><span class="n">iRecvLen</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">){</span>
+                        <span class="n">perror</span><span class="p">(</span><span class="s">"recv"</span><span class="p">);</span>
+                        <span class="n">close</span><span class="p">(</span><span class="n">SocketClient</span><span class="p">);</span>
+                        <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+                    <span class="p">}</span>
+                    <span class="k">else</span><span class="p">{</span>
+                        <span class="n">RecVbuf</span><span class="p">[</span><span class="n">iRecvLen</span><span class="p">]</span> <span class="o">=</span> <span class="sc">'\0'</span><span class="p">;</span>
+                        <span class="n">printf</span><span class="p">(</span><span class="s">"Get Msg From Client %d: %s</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">iClientNum</span><span class="p">,</span> <span class="n">RecVbuf</span><span class="p">);</span>
+                    <span class="p">}</span>
+                <span class="p">}</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+
+	<span class="n">close</span><span class="p">(</span><span class="n">SocketServer</span><span class="p">);</span>
+	<span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div> <p><strong>client.c</strong></p> <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp">
+#include</span> <span class="cpf">&lt;sys/socket.h&gt;</span><span class="cp">
+#include</span> <span class="cpf">&lt;errno.h&gt;</span><span class="cp">
+#include</span> <span class="cpf">&lt;netinet/in.h&gt;</span><span class="cp">
+#include</span> <span class="cpf">&lt;string.h&gt;</span><span class="cp">
+#include</span> <span class="cpf">&lt;sys/socket.h&gt;</span><span class="cp">
+#include</span> <span class="cpf">&lt;netinet/in.h&gt;</span><span class="cp">
+#include</span> <span class="cpf">&lt;arpa/inet.h&gt;</span><span class="cp">
+#include</span> <span class="cpf">&lt;unistd.h&gt;</span><span class="cp">
+</span>
+<span class="cm">/*
+*  创建 Socket -&gt; 发起连接 (connect) -&gt; 发送/接收数据 -&gt; 关闭连接。
+*/</span>
+
+<span class="cp">#define Server_PORT 8888
+</span>
+<span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="o">**</span><span class="n">argv</span><span class="p">){</span>
+    <span class="kt">int</span> <span class="n">iSocketServer</span><span class="p">;</span>
+    <span class="kt">int</span> <span class="n">iRet</span><span class="p">;</span>
+    <span class="k">struct</span> <span class="n">sockaddr_in</span> <span class="n">SocketServerAddr</span><span class="p">;</span>
+    <span class="kt">unsigned</span> <span class="kt">char</span> <span class="n">SendBuf</span><span class="p">[</span><span class="mi">1000</span><span class="p">];</span>
+    <span class="kt">int</span> <span class="n">RecvLen</span><span class="p">;</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">argc</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">){</span>
+        <span class="n">printf</span><span class="p">(</span><span class="s">"Usage: %s &lt;ipaddr&gt; </span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">argv</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span>
+        <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="c1">//创建Socket</span>
+    <span class="n">iSocketServer</span> <span class="o">=</span> <span class="n">socket</span><span class="p">(</span><span class="n">AF_INET</span><span class="p">,</span> <span class="n">SOCK_STREAM</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">iSocketServer</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">){</span>
+        <span class="n">perror</span><span class="p">(</span><span class="s">"socket"</span><span class="p">);</span>
+        <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="c1">// connect</span>
+    <span class="n">SocketServerAddr</span><span class="p">.</span><span class="n">sin_family</span> <span class="o">=</span> <span class="n">AF_INET</span><span class="p">;</span>
+    <span class="n">SocketServerAddr</span><span class="p">.</span><span class="n">sin_port</span> <span class="o">=</span> <span class="n">htons</span><span class="p">(</span><span class="n">Server_PORT</span><span class="p">);</span>
+    <span class="n">memset</span><span class="p">(</span><span class="n">SocketServerAddr</span><span class="p">.</span><span class="n">sin_zero</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">8</span><span class="p">);</span>
+    <span class="k">if</span><span class="p">(</span><span class="mi">0</span> <span class="o">==</span> <span class="n">inet_pton</span><span class="p">(</span><span class="n">AF_INET</span><span class="p">,</span> <span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="o">&amp;</span><span class="n">SocketServerAddr</span><span class="p">.</span><span class="n">sin_addr</span><span class="p">)){</span>
+        <span class="n">printf</span><span class="p">(</span><span class="s">"inValid IP_Addr! </span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+        <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="n">iRet</span> <span class="o">=</span> <span class="n">connect</span><span class="p">(</span><span class="n">iSocketServer</span><span class="p">,</span> <span class="p">(</span><span class="k">struct</span> <span class="n">sockaddr</span> <span class="o">*</span><span class="p">)</span><span class="o">&amp;</span><span class="n">SocketServerAddr</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">sockaddr</span><span class="p">));</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">iRet</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">){</span>
+        <span class="n">perror</span><span class="p">(</span><span class="s">"connect"</span><span class="p">);</span>
+        <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="c1">//发送数据</span>
+    <span class="k">while</span><span class="p">(</span><span class="mi">1</span><span class="p">){</span>
+        <span class="k">if</span><span class="p">(</span><span class="n">fgets</span><span class="p">(</span><span class="n">SendBuf</span><span class="p">,</span> <span class="mi">999</span><span class="p">,</span> <span class="n">stdin</span><span class="p">)){</span>
+            <span class="n">RecvLen</span> <span class="o">=</span> <span class="n">send</span><span class="p">(</span><span class="n">iSocketServer</span><span class="p">,</span> <span class="n">SendBuf</span><span class="p">,</span> <span class="n">strlen</span><span class="p">(</span><span class="n">SendBuf</span><span class="p">),</span> <span class="mi">0</span><span class="p">);</span>
+            <span class="k">if</span><span class="p">(</span><span class="n">RecvLen</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">){</span>
+                <span class="n">close</span><span class="p">(</span><span class="n">iSocketServer</span><span class="p">);</span>
+                <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div> <h3 id="udp">UDP</h3> <p>UDP与TCP的不同点在于UDP不需要connect阶段，而是创建 Socket -&gt; 绑定地址 (bind) -&gt; 接收/发送数据 -&gt; 关闭连接</p> <p><strong>server.c</strong></p> <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp">
+#include</span> <span class="cpf">&lt;sys/socket.h&gt;</span><span class="cp">
+#include</span> <span class="cpf">&lt;errno.h&gt;</span><span class="cp">
+#include</span> <span class="cpf">&lt;netinet/in.h&gt;</span><span class="cp">
+#include</span> <span class="cpf">&lt;string.h&gt;</span><span class="cp">
+#include</span> <span class="cpf">&lt;sys/socket.h&gt;</span><span class="cp">
+#include</span> <span class="cpf">&lt;netinet/in.h&gt;</span><span class="cp">
+#include</span> <span class="cpf">&lt;arpa/inet.h&gt;</span><span class="cp">
+#include</span> <span class="cpf">&lt;unistd.h&gt;</span><span class="cp">
+#include</span> <span class="cpf">&lt;signal.h&gt;</span><span class="cp">
+</span>
+<span class="cm">/*
+*  创建 Socket -&gt; 绑定地址 (bind) -&gt; 接收/发送数据 -&gt; 关闭连接
+*/</span>
+
+<span class="cp">#define Server_PORT 8888
+</span>
+
+<span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="o">**</span><span class="n">argv</span><span class="p">){</span>
+    <span class="kt">int</span> <span class="n">SocketServer</span><span class="p">;</span>
+    <span class="kt">int</span> <span class="n">SocketClient</span><span class="p">;</span>
+    <span class="kt">int</span> <span class="n">iRet</span><span class="p">;</span>
+    <span class="k">struct</span> <span class="n">sockaddr_in</span> <span class="n">SocketServerAddr</span><span class="p">;</span>
+    <span class="k">struct</span> <span class="n">sockaddr_in</span> <span class="n">SocketClientAddr</span><span class="p">;</span>
+    <span class="kt">int</span> <span class="n">iAddrLen</span><span class="p">;</span>
+	<span class="kt">int</span> <span class="n">iClientNum</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+    <span class="kt">unsigned</span> <span class="kt">char</span> <span class="n">RecVbuf</span><span class="p">[</span><span class="mi">1000</span><span class="p">];</span>
+    <span class="kt">int</span> <span class="n">iRecvLen</span><span class="p">;</span>
+
+    <span class="c1">//先建立一个socket</span>
+    <span class="n">SocketServer</span> <span class="o">=</span> <span class="n">socket</span><span class="p">(</span><span class="n">AF_INET</span><span class="p">,</span> <span class="n">SOCK_DGRAM</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">SocketServer</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">){</span>
+        <span class="n">perror</span><span class="p">(</span><span class="s">"socket"</span><span class="p">);</span>
+        <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="c1">//绑定地址</span>
+    <span class="n">SocketServerAddr</span><span class="p">.</span><span class="n">sin_family</span> <span class="o">=</span> <span class="n">AF_INET</span><span class="p">;</span>
+    <span class="n">SocketServerAddr</span><span class="p">.</span><span class="n">sin_addr</span><span class="p">.</span><span class="n">s_addr</span> <span class="o">=</span> <span class="n">htonl</span><span class="p">(</span><span class="n">INADDR_ANY</span><span class="p">);</span>
+    <span class="n">SocketServerAddr</span><span class="p">.</span><span class="n">sin_port</span> <span class="o">=</span> <span class="n">htons</span><span class="p">(</span><span class="n">Server_PORT</span><span class="p">);</span>
+    <span class="n">memset</span><span class="p">(</span><span class="n">SocketServerAddr</span><span class="p">.</span><span class="n">sin_zero</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">8</span><span class="p">);</span>
+
+    <span class="n">iRet</span> <span class="o">=</span> <span class="n">bind</span><span class="p">(</span><span class="n">SocketServer</span><span class="p">,</span> <span class="p">(</span><span class="k">const</span> <span class="k">struct</span> <span class="n">sockaddr</span> <span class="o">*</span><span class="p">)</span><span class="o">&amp;</span><span class="n">SocketServerAddr</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">sockaddr</span><span class="p">));</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">iRet</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">){</span>
+        <span class="n">perror</span><span class="p">(</span><span class="s">"bind"</span><span class="p">);</span>
+        <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+    <span class="p">}</span>
+
+
+    <span class="k">while</span><span class="p">(</span><span class="mi">1</span><span class="p">){</span>
+        <span class="n">iAddrLen</span>  <span class="o">=</span> <span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">sockaddr</span><span class="p">);</span>
+        <span class="n">iRecvLen</span> <span class="o">=</span> <span class="n">recvfrom</span> <span class="p">(</span><span class="n">SocketServer</span><span class="p">,</span> <span class="n">RecVbuf</span><span class="p">,</span> <span class="mi">999</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="p">(</span><span class="k">struct</span> <span class="n">sockaddr</span> <span class="o">*</span><span class="p">)</span><span class="o">&amp;</span><span class="n">SocketClientAddr</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">iAddrLen</span><span class="p">);</span>
+        <span class="k">if</span><span class="p">(</span><span class="n">iRecvLen</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">){</span>
+            <span class="n">RecVbuf</span><span class="p">[</span><span class="n">iRecvLen</span><span class="p">]</span> <span class="o">=</span> <span class="sc">'\0'</span><span class="p">;</span>
+            <span class="n">printf</span><span class="p">(</span><span class="s">"Get MSG From %s: %s </span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">inet_ntoa</span><span class="p">(</span><span class="n">SocketClientAddr</span><span class="p">.</span><span class="n">sin_addr</span><span class="p">),</span> <span class="n">RecVbuf</span><span class="p">);</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+	<span class="n">close</span><span class="p">(</span><span class="n">SocketServer</span><span class="p">);</span>
+	<span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div> <p><strong>client.c</strong></p> <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp">
+#include</span> <span class="cpf">&lt;sys/socket.h&gt;</span><span class="cp">
+#include</span> <span class="cpf">&lt;errno.h&gt;</span><span class="cp">
+#include</span> <span class="cpf">&lt;netinet/in.h&gt;</span><span class="cp">
+#include</span> <span class="cpf">&lt;string.h&gt;</span><span class="cp">
+#include</span> <span class="cpf">&lt;sys/socket.h&gt;</span><span class="cp">
+#include</span> <span class="cpf">&lt;netinet/in.h&gt;</span><span class="cp">
+#include</span> <span class="cpf">&lt;arpa/inet.h&gt;</span><span class="cp">
+#include</span> <span class="cpf">&lt;unistd.h&gt;</span><span class="cp">
+</span>
+<span class="cp">#define Server_PORT 8888
+</span>
+<span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="o">**</span><span class="n">argv</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="kt">int</span> <span class="n">iSocketServer</span><span class="p">;</span>
+    <span class="kt">int</span> <span class="n">iRet</span><span class="p">;</span>
+    <span class="k">struct</span> <span class="n">sockaddr_in</span> <span class="n">SocketServerAddr</span><span class="p">;</span>
+    <span class="kt">unsigned</span> <span class="kt">char</span> <span class="n">SendBuf</span><span class="p">[</span><span class="mi">1000</span><span class="p">];</span>
+    <span class="kt">int</span> <span class="n">RecvLen</span><span class="p">;</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">argc</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="n">printf</span><span class="p">(</span><span class="s">"Usage: %s &lt;ipaddr&gt; </span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">argv</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span>
+        <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="c1">// 创建Socket</span>
+    <span class="n">iSocketServer</span> <span class="o">=</span> <span class="n">socket</span><span class="p">(</span><span class="n">AF_INET</span><span class="p">,</span> <span class="n">SOCK_DGRAM</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">iSocketServer</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="n">perror</span><span class="p">(</span><span class="s">"socket"</span><span class="p">);</span>
+        <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="c1">// connect</span>
+    <span class="n">SocketServerAddr</span><span class="p">.</span><span class="n">sin_family</span> <span class="o">=</span> <span class="n">AF_INET</span><span class="p">;</span>
+    <span class="n">SocketServerAddr</span><span class="p">.</span><span class="n">sin_port</span> <span class="o">=</span> <span class="n">htons</span><span class="p">(</span><span class="n">Server_PORT</span><span class="p">);</span>
+    <span class="n">memset</span><span class="p">(</span><span class="n">SocketServerAddr</span><span class="p">.</span><span class="n">sin_zero</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">8</span><span class="p">);</span>
+    <span class="k">if</span> <span class="p">(</span><span class="mi">0</span> <span class="o">==</span> <span class="n">inet_pton</span><span class="p">(</span><span class="n">AF_INET</span><span class="p">,</span> <span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="o">&amp;</span><span class="n">SocketServerAddr</span><span class="p">.</span><span class="n">sin_addr</span><span class="p">))</span>
+    <span class="p">{</span>
+        <span class="n">printf</span><span class="p">(</span><span class="s">"inValid IP_Addr! </span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+        <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="cp">#ifdef Connect
+</span>    <span class="n">iRet</span> <span class="o">=</span> <span class="n">connect</span><span class="p">(</span><span class="n">iSocketServer</span><span class="p">,</span> <span class="p">(</span><span class="k">struct</span> <span class="n">sockaddr</span> <span class="o">*</span><span class="p">)</span><span class="o">&amp;</span><span class="n">SocketServerAddr</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">sockaddr</span><span class="p">));</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">iRet</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="n">perror</span><span class="p">(</span><span class="s">"connect"</span><span class="p">);</span>
+        <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">"UDP connect! </span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+<span class="cp">#endif
+</span>
+    <span class="c1">// 发送数据</span>
+    <span class="k">while</span> <span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">fgets</span><span class="p">(</span><span class="n">SendBuf</span><span class="p">,</span> <span class="mi">999</span><span class="p">,</span> <span class="n">stdin</span><span class="p">))</span>
+        <span class="p">{</span>
+<span class="cp">#ifdef Connect
+</span>            <span class="n">RecvLen</span> <span class="o">=</span> <span class="n">send</span><span class="p">(</span><span class="n">iSocketServer</span><span class="p">,</span> <span class="n">SendBuf</span><span class="p">,</span> <span class="n">strlen</span><span class="p">(</span><span class="n">SendBuf</span><span class="p">),</span> <span class="mi">0</span><span class="p">);</span>
+
+<span class="cp">#else
+</span>            <span class="n">RecvLen</span> <span class="o">=</span> <span class="n">sendto</span><span class="p">(</span><span class="n">iSocketServer</span><span class="p">,</span> <span class="n">SendBuf</span><span class="p">,</span> <span class="n">strlen</span><span class="p">(</span><span class="n">SendBuf</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span> <span class="p">(</span><span class="k">struct</span> <span class="n">sockaddr</span> <span class="o">*</span><span class="p">)</span><span class="o">&amp;</span><span class="n">SocketServerAddr</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">sockaddr</span><span class="p">));</span>
+<span class="cp">#endif
+</span>            <span class="k">if</span> <span class="p">(</span><span class="n">RecvLen</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">)</span>
+            <span class="p">{</span>
+                <span class="n">close</span><span class="p">(</span><span class="n">iSocketServer</span><span class="p">);</span>
+                <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div> <p>client 有两种用法，分别是使用 <code class="language-plaintext highlighter-rouge">connect</code> 和不使用 <code class="language-plaintext highlighter-rouge">connect</code> 函数。</p> </div> </article> <br> <hr> <br> <h2 class="text-3xl font-semibold mb-4 mt-12">Enjoy Reading This Article?</h2> <p class="mb-2">Here are some more articles you might like to read next:</p> <ul class="list-disc pl-7 my-3 space-y-2 marker:text-[var(--global-theme-color)]"> <li class="leading-relaxed"> <a class="underline decoration-1 hover:text-[var(--global-hover-color)]" href="/blog/2026/linux-driver-development/">Linux 驱动开发学习笔记</a> </li> <li class="leading-relaxed"> <a class="underline decoration-1 hover:text-[var(--global-hover-color)]" href="/blog/2026/sysfs-configfs-device-tree-overlays/">sysfs 与 configfs 对比及设备树插件的选择</a> </li> <li class="leading-relaxed"> <a class="underline decoration-1 hover:text-[var(--global-hover-color)]" href="/blog/2026/concurrency-and-io-models/">并发、竞争与 I/O 模型详解</a> </li> <li class="leading-relaxed"> <a class="underline decoration-1 hover:text-[var(--global-hover-color)]" href="/blog/2026/linux-threaded-irq-vs-cmwq/">Linux 中断线程化与并发管理工作队列对比</a> </li> <li class="leading-relaxed"> <a class="underline decoration-1 hover:text-[var(--global-hover-color)]" href="/blog/2026/linux-cmwq/">Linux 并发管理工作队列（CMWQ）详解</a> </li> <li class="leading-relaxed"> <a class="underline decoration-1 hover:text-[var(--global-hover-color)]" href="/blog/2026/data-structures/">数据结构学习笔记</a> </li> </ul> </div> </div> </div> </div> <footer class="fixed-bottom" role="contentinfo"> <div class="container mt-0"> © Copyright 2026 Longqi Li. Powered by <a href="https://jekyllrb.com/" target="_blank" rel="external nofollow noopener">Jekyll</a> with <a href="https://github.com/alshedivat/al-folio" rel="external nofollow noopener" target="_blank">al-folio</a> theme. Hosted by <a href="https://pages.github.com/" target="_blank" rel="external nofollow noopener">GitHub Pages</a>. </div> </footer> <script>
+  window.alFolio = {
+    compatBootstrap: false
+  };
+</script> <script src="/assets/js/nav-toggle.js?v=141bd79a73ebc0f0b6ea58e440ae79fc"></script> <script defer src="https://cdn.jsdelivr.net/npm/masonry-layout@4.2.2/dist/masonry.pkgd.min.js" integrity="sha256-Nn1q/fx0H7SNLZMQ5Hw5JLaTRZp0yILA/FRexe19VdI=" crossorigin="anonymous"></script> <script defer src="https://cdn.jsdelivr.net/npm/imagesloaded@5.0.0/imagesloaded.pkgd.min.js" integrity="sha256-htrLFfZJ6v5udOG+3kNLINIKh2gvoKqwEhHYfTTMICc=" crossorigin="anonymous"></script> <script defer src="/assets/js/masonry.js?v=e49affc7bd2646f6acdad1dbe02c2359" type="text/javascript"></script> <script defer type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js" integrity="sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI=" crossorigin="anonymous"></script> <script src="/assets/al_math/js/mathjax-setup.js"></script> <script src="/assets/js/tooltips-setup.js?v=fe487e99db6c43751e6e7bdb2d6a0611"></script> <script defer src="https://cdn.jsdelivr.net/npm/tocbot@4.36.4/dist/tocbot.min.js" integrity="sha256-lo/r+jQ81wWrxdIiiiEEd538z4+dTJTt+leOuAS7GCw=" crossorigin="anonymous"></script> <script src="/assets/js/no_defer.js?v=53b1b1a645525975c963ce8bf8bfefcf"></script> <script defer src="/assets/js/common.js?v=87baac90f765f2f3362dcf6aaf312a8a"></script> <script defer src="/assets/js/copy_code.js?v=c8a01c11a92744d44b093fc3bda915df" type="text/javascript"></script> <script defer src="/assets/js/jupyter_new_tab.js?v=896d254890d9b47f0281f63bfccf0dee"></script> <script async src="https://d1bxh8uas1mnw7.cloudfront.net/assets/embed.js"></script> <script async src="https://badge.dimensions.ai/badge.js"></script> <script defer src="https://cdn.jsdelivr.net/npm/medium-zoom@1.1.0/dist/medium-zoom.min.js" integrity="sha256-ZgMyDAIYDYGxbcpJcfUnYwNevG/xi9OHKaR/8GK+jWc=" crossorigin="anonymous"></script> <script defer src="/assets/al_img_tools/js/zoom.js"></script> <script defer src="/assets/js/progress-bar.js?v=499464c5c63ced6cf7ad62509f1e2610" type="text/javascript"></script> <script src="https://cdn.jsdelivr.net/npm/vanilla-back-to-top@7.2.1/dist/vanilla-back-to-top.min.js" integrity="sha256-uMJJ3EoTyfRBoTbR+lrfu1uRQ87RZG8AR3cVNuQVeFg=" crossorigin="anonymous"></script> <script>
+    addBackToTop();
+  </script> </body> </html>
