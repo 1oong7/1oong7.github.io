@@ -25,42 +25,29 @@ latest_posts:
   limit: 3 # leave blank to include all the blog posts
 ---
 
-<div class="home-intro-panel">
-  <p class="home-eyebrow">EMBEDDED SYSTEMS · SENSOR FUSION</p>
-  <p class="home-greeting">你好，我是 <strong>1oong7</strong>。</p>
-  <p class="home-summary">
+<div class="about-intro">
+  <p>你好，我是 <strong>1oong7</strong>。</p>
+  <p>
     我主要关注嵌入式系统开发、IMU 姿态融合以及 Unity 交互应用。这个网站用于记录项目实践、技术笔记、学习思考以及一些随笔。
   </p>
 </div>
 
-<div class="home-dashboard">
-  <section class="home-card home-focus-card" aria-labelledby="focus-title">
-    <header class="home-section-heading">
-      <span class="home-section-index">01</span>
-      <div>
-        <p class="home-section-kicker">FOCUS</p>
-        <h2 id="focus-title">关注方向</h2>
-      </div>
-    </header>
-    <div class="focus-grid">
-      <span class="focus-tag">嵌入式开发</span>
-      <span class="focus-tag">超声波三维定位</span>
-      <span class="focus-tag">IMU 姿态解算与多传感器融合</span>
-      <span class="focus-tag">Unity 手势追踪与交互开发</span>
-      <span class="focus-tag">滤波技术及其工程应用</span>
-      <span class="focus-tag">开源项目复刻</span>
-      <span class="focus-tag">网络技术</span>
-    </div>
+<div class="about-sections">
+  <section class="about-section" aria-labelledby="focus-title">
+    <h2 id="focus-title">关注方向</h2>
+    <ul class="focus-list">
+      <li>嵌入式开发</li>
+      <li>超声波三维定位</li>
+      <li>IMU 姿态解算与多传感器融合</li>
+      <li>Unity 手势追踪与交互开发</li>
+      <li>滤波技术及其工程应用</li>
+      <li>开源项目复刻</li>
+      <li>网络技术</li>
+    </ul>
   </section>
 
-  <section class="home-card home-education-card" aria-labelledby="education-title">
-    <header class="home-section-heading">
-      <span class="home-section-index">02</span>
-      <div>
-        <p class="home-section-kicker">EDUCATION</p>
-        <h2 id="education-title">教育经历</h2>
-      </div>
-    </header>
+  <section class="about-section" aria-labelledby="education-title">
+    <h2 id="education-title">教育经历</h2>
     <div class="education-list">
       <section class="education-item">
         <h3>吉林大学</h3>
