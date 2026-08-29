@@ -1,14 +1,14 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" xml:lang="zh-CN"><generator uri="https://jekyllrb.com/" version="4.4.1">Jekyll</generator><link href="https://1oong7.github.io/feed.xml" rel="self" type="application/atom+xml"/><link href="https://1oong7.github.io/" rel="alternate" type="text/html" hreflang="zh-CN"/><updated>2026-08-29T12:37:29+00:00</updated><id>https://1oong7.github.io/feed.xml</id><title type="html">1oong7的个人博客</title><subtitle>记录嵌入式系统、超声波定位、IMU 姿态融合与 Unity 交互开发。 </subtitle><entry><title type="html">数据结构学习笔记</title><link href="https://1oong7.github.io/blog/2026/data-structures/" rel="alternate" type="text/html" title="数据结构学习笔记"/><published>2026-05-09T06:39:58+00:00</published><updated>2026-05-09T06:39:58+00:00</updated><id>https://1oong7.github.io/blog/2026/data-structures</id><content type="html" xml:base="https://1oong7.github.io/blog/2026/data-structures/"><![CDATA[<p>本笔记基于</p> <p><a href="https://www.bilibili.com/video/BV1Fv4y1f7T1/?p=4&amp;share_source=copy_web&amp;vd_source=539a6f293ed8a1deaa368549e9b9d579">【强烈推荐】深入浅出数据结构 - 顶尖程序员图文讲解 - UP主翻译校对 (已完结)</a></p> <h2 id="导论">导论</h2> <p>ADT（abstract data type） 抽象数据结构</p> <h2 id="链表">链表</h2> <p>主要是解决数组<strong>内存利用率不高</strong>和<strong>动态性差</strong>的问题。</p> <p>链表实际上在用<strong>空间复杂度换时间复杂度</strong>；</p> <p><img src="/assets/img/blog/data-structures/image-20260422160529077.png" alt="链表节点结构示意图"/></p> <p>定义节点的结构体如下：</p> <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">struct</span> <span class="n">node</span><span class="p">{</span>
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" xml:lang="zh-CN"><generator uri="https://jekyllrb.com/" version="4.4.1">Jekyll</generator><link href="https://1oong7.github.io/feed.xml" rel="self" type="application/atom+xml"/><link href="https://1oong7.github.io/" rel="alternate" type="text/html" hreflang="zh-CN"/><updated>2026-08-29T13:14:15+00:00</updated><id>https://1oong7.github.io/feed.xml</id><title type="html">1oong7的个人博客</title><subtitle>记录嵌入式系统、超声波定位、IMU 姿态融合与 Unity 交互开发。 </subtitle><entry><title type="html">数据结构学习笔记</title><link href="https://1oong7.github.io/blog/2026/data-structures/" rel="alternate" type="text/html" title="数据结构学习笔记"/><published>2026-05-09T06:39:58+00:00</published><updated>2026-05-09T06:39:58+00:00</updated><id>https://1oong7.github.io/blog/2026/data-structures</id><content type="html" xml:base="https://1oong7.github.io/blog/2026/data-structures/"><![CDATA[<p>本笔记基于</p> <p><a href="https://www.bilibili.com/video/BV1Fv4y1f7T1/?p=4&amp;share_source=copy_web&amp;vd_source=539a6f293ed8a1deaa368549e9b9d579">【强烈推荐】深入浅出数据结构 - 顶尖程序员图文讲解 - UP主翻译校对 (已完结)</a></p> <h2 id="导论">导论</h2> <p>ADT（abstract data type） 抽象数据结构</p> <h2 id="链表">链表</h2> <p>主要是解决数组<strong>内存利用率不高</strong>和<strong>动态性差</strong>的问题。</p> <p>链表实际上在用<strong>空间复杂度换时间复杂度</strong>；</p> <p><img src="/assets/img/blog/data-structures/image-20260422160529077.png" alt="链表节点结构示意图"/></p> <p>定义节点的结构体如下：</p> <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">struct</span> <span class="n">node</span><span class="p">{</span>
  <span class="kt">int</span> <span class="n">data</span><span class="p">;</span>
  <span class="n">Node</span> <span class="o">*</span><span class="n">next</span><span class="p">;</span>
 <span class="p">}</span>
-</code></pre></div></div> <p>链表只能从一个节点访问到下一个节点，不支持随机存储，如果想访问最后一个元素只能从头节点开始，时间复杂度高。</p> <p>针对查询，时间与n呈正相关；对于插入和删除，时间复杂度最坏的情况下为O(n).</p> <table> <thead> <tr> <th>操作</th> <th>数组</th> <th>链表</th> </tr> </thead> <tbody> <tr> <td>访问元素的成本</td> <td>O(1)</td> <td>O(n)</td> </tr> <tr> <td>内存需求</td> <td>大小固定，可能会有未使用的内存</td> <td>用一个申请一个，但每个节点占用比数组的多</td> </tr> <tr> <td>插入数据</td> <td>1. 在开头插入 O(n)；2. 末尾 未满O(1) 已满 O(n)；3. 中间位置 O(n)</td> <td>1. O(1)；2. O(n)；3. O(n)</td> </tr> <tr> <td>删除数据</td> <td>同插入</td> <td>同插入</td> </tr> </tbody> </table> <h3 id="c语言实现">C语言实现</h3> <h4 id="单链表">单链表</h4> <ul> <li>从头插入</li> </ul> <pre><code class="language-C">void InsertAtStart(int x) {
-    struct Node * temp = (struct Node*)malloc(sizeof(struct Node));
-    temp-&gt;data =x;
-    temp-&gt;next = head;
-    head = temp;
-}
-</code></pre> <ul> <li>末尾插入</li> </ul> <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">void</span> <span class="nf">InsertAtEnd</span><span class="p">(</span><span class="kt">int</span> <span class="n">data</span><span class="p">){</span>
+</code></pre></div></div> <p>链表只能从一个节点访问到下一个节点，不支持随机存储，如果想访问最后一个元素只能从头节点开始，时间复杂度高。</p> <p>针对查询，时间与n呈正相关；对于插入和删除，时间复杂度最坏的情况下为O(n).</p> <table> <thead> <tr> <th>操作</th> <th>数组</th> <th>链表</th> </tr> </thead> <tbody> <tr> <td>访问元素的成本</td> <td>O(1)</td> <td>O(n)</td> </tr> <tr> <td>内存需求</td> <td>大小固定，可能会有未使用的内存</td> <td>用一个申请一个，但每个节点占用比数组的多</td> </tr> <tr> <td>插入数据</td> <td>1. 在开头插入 O(n)；2. 末尾 未满O(1) 已满 O(n)；3. 中间位置 O(n)</td> <td>1. O(1)；2. O(n)；3. O(n)</td> </tr> <tr> <td>删除数据</td> <td>同插入</td> <td>同插入</td> </tr> </tbody> </table> <h3 id="c语言实现">C语言实现</h3> <h4 id="单链表">单链表</h4> <ul> <li>从头插入</li> </ul> <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">void</span> <span class="nf">InsertAtStart</span><span class="p">(</span><span class="kt">int</span> <span class="n">x</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">struct</span> <span class="n">Node</span> <span class="o">*</span> <span class="n">temp</span> <span class="o">=</span> <span class="p">(</span><span class="k">struct</span> <span class="n">Node</span><span class="o">*</span><span class="p">)</span><span class="n">malloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">Node</span><span class="p">));</span>
+    <span class="n">temp</span><span class="o">-&gt;</span><span class="n">data</span> <span class="o">=</span><span class="n">x</span><span class="p">;</span>
+    <span class="n">temp</span><span class="o">-&gt;</span><span class="n">next</span> <span class="o">=</span> <span class="n">head</span><span class="p">;</span>
+    <span class="n">head</span> <span class="o">=</span> <span class="n">temp</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div> <ul> <li>末尾插入</li> </ul> <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">void</span> <span class="nf">InsertAtEnd</span><span class="p">(</span><span class="kt">int</span> <span class="n">data</span><span class="p">){</span>
     <span class="k">struct</span> <span class="n">Node</span> <span class="o">*</span> <span class="n">temp</span> <span class="o">=</span> <span class="p">(</span><span class="k">struct</span> <span class="n">Node</span><span class="o">*</span><span class="p">)</span><span class="n">malloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">Node</span><span class="p">));</span>
     <span class="n">temp</span><span class="o">-&gt;</span><span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="p">;</span>
     <span class="n">temp</span><span class="o">-&gt;</span><span class="n">next</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
@@ -22,192 +22,192 @@
     <span class="p">}</span>
     <span class="n">temp1</span><span class="o">-&gt;</span><span class="n">next</span> <span class="o">=</span> <span class="n">temp</span><span class="p">;</span>
 <span class="p">}</span>
-</code></pre></div></div> <ul> <li>任意位置插入</li> </ul> <pre><code class="language-C">void InsertAtMiddle(int data,int n) {
-    if (n &lt; 1) {
-        printf("Invalid position\n");
-        return;
-    }
-    struct Node * temp1 = (struct Node *)malloc(sizeof(struct Node));
-    if (temp1 == NULL) {
-        return;
-    }
-    temp1-&gt;data = data;
-    temp1-&gt;next = NULL;
-    if (n == 1) {
-        temp1-&gt;next = head;
-        head = temp1;
-        return;
-    }
-    struct Node * temp2 = head;
-    for (int i = 1; i &lt; n - 1 &amp;&amp; temp2 != NULL; i++) {
-        temp2 = temp2-&gt;next;
-    }
-    if (temp2 == NULL) {
-        printf("Invalid position\n");
-        free(temp1);
-        return;
-    }
-    temp1-&gt;next = temp2-&gt;next;
-    temp2-&gt;next = temp1;
-}
-</code></pre> <ul> <li>删除</li> </ul> <pre><code class="language-C">void link_Delete(int n){
-    struct Node *temp1 = (struct Node *)malloc(sizeof(struct Node));
-    if (temp1 == NULL) {
-        return;
-    }
-    temp1 = head;
-    if(n==1){
-        head = temp1-&gt;next;
-        free(temp1);
-        return;
-    }
-    for(int i = 1;i&lt;n-1 &amp;&amp; temp1!=NULL;i++){
-        temp1 = temp1-&gt;next;
-    }
-    struct Node *temp2 = temp1-&gt;next;
-    temp1-&gt;next = temp2-&gt;next;
-    free(temp2);
-}
-</code></pre> <ul> <li>反转一个链表</li> </ul> <pre><code class="language-C">//迭代方法
-void Reverse(){
-    struct Node *current ,*prev , *next;
-    current = head;
-    prev = NULL;
-    next = NULL;
-    while (current != NULL)
-    {
-        next = current-&gt;next;
-        current-&gt;next = prev;
-        prev = current;
-        current = next;
-    }
-    head = prev;
-}
-//反转打印
-void Print(struct Node *head){
-    if(head == NULL){
-        printf("\n");
-        return;
-    }
-    printf("%d ",head-&gt;data);
-    Print(head-&gt;next);
-}
-void PrintReverse(struct Node *head){
-    if(head == NULL){
-        return;
-    }
-    PrintReverse(head-&gt;next);
-    printf("%d ",head-&gt;data);
-}
-//递归方法
-void Reverse_Recursion(struct Node * p){
-    if(p-&gt;next == NULL){
-        head = p;
-        return;
-    }
-    Reverse_Recursion(p-&gt;next);
-    struct Node *q = p-&gt;next;
-    q-&gt;next = p;
-    p-&gt;next = NULL;
-}
-</code></pre> <h4 id="双链表">双链表</h4> <pre><code class="language-C">//头插入 尾插入 删除 打印 反转打印
-#include &lt;stdio.h&gt;
-#include &lt;stdlib.h&gt;
+</code></pre></div></div> <ul> <li>任意位置插入</li> </ul> <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">void</span> <span class="nf">InsertAtMiddle</span><span class="p">(</span><span class="kt">int</span> <span class="n">data</span><span class="p">,</span><span class="kt">int</span> <span class="n">n</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">n</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">printf</span><span class="p">(</span><span class="s">"Invalid position</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+        <span class="k">return</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">struct</span> <span class="n">Node</span> <span class="o">*</span> <span class="n">temp1</span> <span class="o">=</span> <span class="p">(</span><span class="k">struct</span> <span class="n">Node</span> <span class="o">*</span><span class="p">)</span><span class="n">malloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">Node</span><span class="p">));</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">temp1</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">return</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="n">temp1</span><span class="o">-&gt;</span><span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="p">;</span>
+    <span class="n">temp1</span><span class="o">-&gt;</span><span class="n">next</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">n</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">temp1</span><span class="o">-&gt;</span><span class="n">next</span> <span class="o">=</span> <span class="n">head</span><span class="p">;</span>
+        <span class="n">head</span> <span class="o">=</span> <span class="n">temp1</span><span class="p">;</span>
+        <span class="k">return</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">struct</span> <span class="n">Node</span> <span class="o">*</span> <span class="n">temp2</span> <span class="o">=</span> <span class="n">head</span><span class="p">;</span>
+    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">n</span> <span class="o">-</span> <span class="mi">1</span> <span class="o">&amp;&amp;</span> <span class="n">temp2</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">temp2</span> <span class="o">=</span> <span class="n">temp2</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">temp2</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">printf</span><span class="p">(</span><span class="s">"Invalid position</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+        <span class="n">free</span><span class="p">(</span><span class="n">temp1</span><span class="p">);</span>
+        <span class="k">return</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="n">temp1</span><span class="o">-&gt;</span><span class="n">next</span> <span class="o">=</span> <span class="n">temp2</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">;</span>
+    <span class="n">temp2</span><span class="o">-&gt;</span><span class="n">next</span> <span class="o">=</span> <span class="n">temp1</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div> <ul> <li>删除</li> </ul> <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">void</span> <span class="nf">link_Delete</span><span class="p">(</span><span class="kt">int</span> <span class="n">n</span><span class="p">){</span>
+    <span class="k">struct</span> <span class="n">Node</span> <span class="o">*</span><span class="n">temp1</span> <span class="o">=</span> <span class="p">(</span><span class="k">struct</span> <span class="n">Node</span> <span class="o">*</span><span class="p">)</span><span class="n">malloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">Node</span><span class="p">));</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">temp1</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">return</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="n">temp1</span> <span class="o">=</span> <span class="n">head</span><span class="p">;</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">n</span><span class="o">==</span><span class="mi">1</span><span class="p">){</span>
+        <span class="n">head</span> <span class="o">=</span> <span class="n">temp1</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">;</span>
+        <span class="n">free</span><span class="p">(</span><span class="n">temp1</span><span class="p">);</span>
+        <span class="k">return</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">for</span><span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span><span class="n">i</span><span class="o">&lt;</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span> <span class="o">&amp;&amp;</span> <span class="n">temp1</span><span class="o">!=</span><span class="nb">NULL</span><span class="p">;</span><span class="n">i</span><span class="o">++</span><span class="p">){</span>
+        <span class="n">temp1</span> <span class="o">=</span> <span class="n">temp1</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">struct</span> <span class="n">Node</span> <span class="o">*</span><span class="n">temp2</span> <span class="o">=</span> <span class="n">temp1</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">;</span>
+    <span class="n">temp1</span><span class="o">-&gt;</span><span class="n">next</span> <span class="o">=</span> <span class="n">temp2</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">;</span>
+    <span class="n">free</span><span class="p">(</span><span class="n">temp2</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></div> <ul> <li>反转一个链表</li> </ul> <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">//迭代方法</span>
+<span class="kt">void</span> <span class="nf">Reverse</span><span class="p">(){</span>
+    <span class="k">struct</span> <span class="n">Node</span> <span class="o">*</span><span class="n">current</span> <span class="p">,</span><span class="o">*</span><span class="n">prev</span> <span class="p">,</span> <span class="o">*</span><span class="n">next</span><span class="p">;</span>
+    <span class="n">current</span> <span class="o">=</span> <span class="n">head</span><span class="p">;</span>
+    <span class="n">prev</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
+    <span class="n">next</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
+    <span class="k">while</span> <span class="p">(</span><span class="n">current</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="n">next</span> <span class="o">=</span> <span class="n">current</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">;</span>
+        <span class="n">current</span><span class="o">-&gt;</span><span class="n">next</span> <span class="o">=</span> <span class="n">prev</span><span class="p">;</span>
+        <span class="n">prev</span> <span class="o">=</span> <span class="n">current</span><span class="p">;</span>
+        <span class="n">current</span> <span class="o">=</span> <span class="n">next</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="n">head</span> <span class="o">=</span> <span class="n">prev</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="c1">//反转打印</span>
+<span class="kt">void</span> <span class="nf">Print</span><span class="p">(</span><span class="k">struct</span> <span class="n">Node</span> <span class="o">*</span><span class="n">head</span><span class="p">){</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">head</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">){</span>
+        <span class="n">printf</span><span class="p">(</span><span class="s">"</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+        <span class="k">return</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">"%d "</span><span class="p">,</span><span class="n">head</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">);</span>
+    <span class="n">Print</span><span class="p">(</span><span class="n">head</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">);</span>
+<span class="p">}</span>
+<span class="kt">void</span> <span class="nf">PrintReverse</span><span class="p">(</span><span class="k">struct</span> <span class="n">Node</span> <span class="o">*</span><span class="n">head</span><span class="p">){</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">head</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">){</span>
+        <span class="k">return</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="n">PrintReverse</span><span class="p">(</span><span class="n">head</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">);</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">"%d "</span><span class="p">,</span><span class="n">head</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">);</span>
+<span class="p">}</span>
+<span class="c1">//递归方法</span>
+<span class="kt">void</span> <span class="nf">Reverse_Recursion</span><span class="p">(</span><span class="k">struct</span> <span class="n">Node</span> <span class="o">*</span> <span class="n">p</span><span class="p">){</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">p</span><span class="o">-&gt;</span><span class="n">next</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">){</span>
+        <span class="n">head</span> <span class="o">=</span> <span class="n">p</span><span class="p">;</span>
+        <span class="k">return</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="n">Reverse_Recursion</span><span class="p">(</span><span class="n">p</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">);</span>
+    <span class="k">struct</span> <span class="n">Node</span> <span class="o">*</span><span class="n">q</span> <span class="o">=</span> <span class="n">p</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">;</span>
+    <span class="n">q</span><span class="o">-&gt;</span><span class="n">next</span> <span class="o">=</span> <span class="n">p</span><span class="p">;</span>
+    <span class="n">p</span><span class="o">-&gt;</span><span class="n">next</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div> <h4 id="双链表">双链表</h4> <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">//头插入 尾插入 删除 打印 反转打印</span>
+<span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp">
+#include</span> <span class="cpf">&lt;stdlib.h&gt;</span><span class="cp">
+</span>
+<span class="k">struct</span> <span class="n">Node</span>
+<span class="p">{</span>
+    <span class="kt">int</span> <span class="n">data</span><span class="p">;</span>
+    <span class="k">struct</span> <span class="n">Node</span><span class="o">*</span> <span class="n">next</span><span class="p">;</span>
+    <span class="k">struct</span> <span class="n">Node</span><span class="o">*</span> <span class="n">prev</span><span class="p">;</span>
+<span class="p">};</span>
+<span class="k">struct</span> <span class="n">Node</span> <span class="o">*</span><span class="n">head</span><span class="p">;</span>
+<span class="k">struct</span> <span class="n">Node</span> <span class="o">*</span><span class="nf">CreatNewNode</span><span class="p">(</span><span class="kt">int</span> <span class="n">x</span><span class="p">){</span>
+    <span class="k">struct</span> <span class="n">Node</span> <span class="o">*</span> <span class="n">NewNode</span>  <span class="o">=</span> <span class="p">(</span><span class="k">struct</span> <span class="n">Node</span> <span class="o">*</span><span class="p">)</span><span class="n">malloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">Node</span><span class="p">));</span>
+    <span class="n">NewNode</span><span class="o">-&gt;</span><span class="n">data</span> <span class="o">=</span> <span class="n">x</span><span class="p">;</span>
+    <span class="n">NewNode</span><span class="o">-&gt;</span><span class="n">prev</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
+    <span class="n">NewNode</span><span class="o">-&gt;</span><span class="n">next</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
+    <span class="k">return</span> <span class="n">NewNode</span><span class="p">;</span>
+<span class="p">}</span>
 
-struct Node
-{
-    int data;
-    struct Node* next;
-    struct Node* prev;
-};
-struct Node *head;
-struct Node *CreatNewNode(int x){
-    struct Node * NewNode  = (struct Node *)malloc(sizeof(struct Node));
-    NewNode-&gt;data = x;
-    NewNode-&gt;prev = NULL;
-    NewNode-&gt;next = NULL;
-    return NewNode;
-}
+<span class="kt">void</span> <span class="nf">InsertAtHead</span><span class="p">(</span><span class="kt">int</span> <span class="n">x</span><span class="p">){</span>
+    <span class="k">struct</span> <span class="n">Node</span> <span class="o">*</span><span class="n">temp</span> <span class="o">=</span> <span class="n">CreatNewNode</span><span class="p">(</span><span class="n">x</span><span class="p">);</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">head</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="n">head</span> <span class="o">=</span> <span class="n">temp</span><span class="p">;</span>
+        <span class="k">return</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="n">temp</span><span class="o">-&gt;</span><span class="n">next</span> <span class="o">=</span> <span class="n">head</span><span class="p">;</span>
+    <span class="n">head</span><span class="o">-&gt;</span><span class="n">prev</span> <span class="o">=</span> <span class="n">temp</span><span class="p">;</span>
+    <span class="n">head</span> <span class="o">=</span> <span class="n">temp</span><span class="p">;</span>
+<span class="p">}</span>
 
-void InsertAtHead(int x){
-    struct Node *temp = CreatNewNode(x);
-    if (head == NULL)
-    {
-        head = temp;
-        return;
-    }
-    temp-&gt;next = head;
-    head-&gt;prev = temp;
-    head = temp;
-}
+<span class="kt">void</span> <span class="nf">InsertAtTail</span><span class="p">(</span><span class="kt">int</span> <span class="n">x</span><span class="p">){</span>
+    <span class="k">struct</span> <span class="n">Node</span> <span class="o">*</span><span class="n">temp</span> <span class="o">=</span> <span class="n">CreatNewNode</span><span class="p">(</span><span class="n">x</span><span class="p">);</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">head</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="n">head</span> <span class="o">=</span> <span class="n">temp</span><span class="p">;</span>
+        <span class="k">return</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">struct</span> <span class="n">Node</span> <span class="o">*</span><span class="n">temp1</span> <span class="o">=</span> <span class="n">head</span><span class="p">;</span>
+    <span class="k">while</span><span class="p">(</span><span class="n">temp1</span><span class="o">-&gt;</span><span class="n">next</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">){</span>
+        <span class="n">temp1</span> <span class="o">=</span> <span class="n">temp1</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="n">temp1</span><span class="o">-&gt;</span><span class="n">next</span> <span class="o">=</span> <span class="n">temp</span><span class="p">;</span>
+    <span class="n">temp</span><span class="o">-&gt;</span><span class="n">prev</span> <span class="o">=</span> <span class="n">temp1</span><span class="p">;</span>
+<span class="p">}</span>
 
-void InsertAtTail(int x){
-    struct Node *temp = CreatNewNode(x);
-    if (head == NULL)
-    {
-        head = temp;
-        return;
-    }
-    struct Node *temp1 = head;
-    while(temp1-&gt;next != NULL){
-        temp1 = temp1-&gt;next;
-    }
-    temp1-&gt;next = temp;
-    temp-&gt;prev = temp1;
-}
+<span class="kt">void</span> <span class="nf">Delete</span><span class="p">(</span><span class="kt">int</span> <span class="n">n</span><span class="p">){</span>
+    <span class="k">struct</span> <span class="n">Node</span> <span class="o">*</span><span class="n">temp</span> <span class="o">=</span> <span class="n">head</span><span class="p">;</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">head</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="k">return</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">for</span><span class="p">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">i</span><span class="o">&lt;</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">){</span>
+        <span class="n">temp</span> <span class="o">=</span> <span class="n">temp</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="n">temp</span><span class="o">-&gt;</span><span class="n">prev</span><span class="o">-&gt;</span><span class="n">next</span> <span class="o">=</span> <span class="n">temp</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">;</span>
+    <span class="n">temp</span><span class="o">-&gt;</span><span class="n">next</span><span class="o">-&gt;</span><span class="n">prev</span> <span class="o">=</span> <span class="n">temp</span><span class="o">-&gt;</span><span class="n">prev</span><span class="p">;</span>
+<span class="p">}</span>
 
-void Delete(int n){
-    struct Node *temp = head;
-    if (head == NULL)
-    {
-        return;
-    }
-    for(int i=0; i&lt;n-1; i++){
-        temp = temp-&gt;next;
-    }
-    temp-&gt;prev-&gt;next = temp-&gt;next;
-    temp-&gt;next-&gt;prev = temp-&gt;prev;
-}
+<span class="kt">void</span> <span class="nf">Print</span><span class="p">(){</span>
+    <span class="k">struct</span> <span class="n">Node</span> <span class="o">*</span><span class="n">temp</span> <span class="o">=</span> <span class="n">head</span><span class="p">;</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">temp</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="k">return</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">"Forward: "</span><span class="p">);</span>
+    <span class="k">while</span><span class="p">(</span><span class="n">temp</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">){</span>
+        <span class="n">printf</span><span class="p">(</span><span class="s">"%d "</span><span class="p">,</span><span class="n">temp</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">);</span>
+        <span class="n">temp</span> <span class="o">=</span> <span class="n">temp</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">"</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+<span class="p">}</span>
+<span class="kt">void</span> <span class="nf">PrintReverse</span><span class="p">(){</span>
+    <span class="k">struct</span> <span class="n">Node</span> <span class="o">*</span><span class="n">temp</span> <span class="o">=</span> <span class="n">head</span><span class="p">;</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">temp</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="k">return</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">while</span><span class="p">(</span><span class="n">temp</span><span class="o">-&gt;</span><span class="n">next</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">){</span>
+        <span class="n">temp</span> <span class="o">=</span> <span class="n">temp</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">"Reverse: "</span><span class="p">);</span>
+    <span class="k">while</span><span class="p">(</span><span class="n">temp</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">){</span>
+        <span class="n">printf</span><span class="p">(</span><span class="s">"%d "</span><span class="p">,</span> <span class="n">temp</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">);</span>
+        <span class="n">temp</span> <span class="o">=</span> <span class="n">temp</span><span class="o">-&gt;</span><span class="n">prev</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">"</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+<span class="p">}</span>
 
-void Print(){
-    struct Node *temp = head;
-    if(temp == NULL)
-    {
-        return;
-    }
-    printf("Forward: ");
-    while(temp != NULL){
-        printf("%d ",temp-&gt;data);
-        temp = temp-&gt;next;
-    }
-    printf("\n");
-}
-void PrintReverse(){
-    struct Node *temp = head;
-    if(temp == NULL)
-    {
-        return;
-    }
-    while(temp-&gt;next != NULL){
-        temp = temp-&gt;next;
-    }
-    printf("Reverse: ");
-    while(temp != NULL){
-        printf("%d ", temp-&gt;data);
-        temp = temp-&gt;prev;
-    }
-    printf("\n");
-}
-
-int main(void){
-    InsertAtHead(2); Print();PrintReverse();
-    InsertAtHead(4); Print();PrintReverse();
-    InsertAtHead(6); Print();PrintReverse();
-    InsertAtTail(8); Print();PrintReverse();
-    Delete(3);       Print();PrintReverse();
-    return 0;
-}
-</code></pre> <h2 id="栈">栈</h2> <p>先进后出，后进先出（Last In First Out）</p> <p>应用:</p> <ul> <li>函数回调/递归</li> <li>undo in an editor</li> <li>括号验证</li> </ul> <p>常用操作: <code class="language-plaintext highlighter-rouge">push</code> <code class="language-plaintext highlighter-rouge">pop</code> <code class="language-plaintext highlighter-rouge">top</code> <code class="language-plaintext highlighter-rouge">Isempty</code> 每个操作的时间复杂度应该是O(1)</p> <p>想要实现栈，可以用数组和链表。</p> <p>使用数组时，要提前给数组分配大小，就会遇到栈溢出的问题，而使用链表则不会。</p> <h3 id="栈的c语言实现">栈的C语言实现</h3> <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">void</span><span class="p">){</span>
+    <span class="n">InsertAtHead</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span> <span class="n">Print</span><span class="p">();</span><span class="n">PrintReverse</span><span class="p">();</span>
+    <span class="n">InsertAtHead</span><span class="p">(</span><span class="mi">4</span><span class="p">);</span> <span class="n">Print</span><span class="p">();</span><span class="n">PrintReverse</span><span class="p">();</span>
+    <span class="n">InsertAtHead</span><span class="p">(</span><span class="mi">6</span><span class="p">);</span> <span class="n">Print</span><span class="p">();</span><span class="n">PrintReverse</span><span class="p">();</span>
+    <span class="n">InsertAtTail</span><span class="p">(</span><span class="mi">8</span><span class="p">);</span> <span class="n">Print</span><span class="p">();</span><span class="n">PrintReverse</span><span class="p">();</span>
+    <span class="n">Delete</span><span class="p">(</span><span class="mi">3</span><span class="p">);</span>       <span class="n">Print</span><span class="p">();</span><span class="n">PrintReverse</span><span class="p">();</span>
+    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div> <h2 id="栈">栈</h2> <p>先进后出，后进先出（Last In First Out）</p> <p>应用:</p> <ul> <li>函数回调/递归</li> <li>undo in an editor</li> <li>括号验证</li> </ul> <p>常用操作: <code class="language-plaintext highlighter-rouge">push</code> <code class="language-plaintext highlighter-rouge">pop</code> <code class="language-plaintext highlighter-rouge">top</code> <code class="language-plaintext highlighter-rouge">Isempty</code> 每个操作的时间复杂度应该是O(1)</p> <p>想要实现栈，可以用数组和链表。</p> <p>使用数组时，要提前给数组分配大小，就会遇到栈溢出的问题，而使用链表则不会。</p> <h3 id="栈的c语言实现">栈的C语言实现</h3> <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
 <span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp">
 #include</span> <span class="cpf">&lt;stdlib.h&gt;</span><span class="cp">
 </span>
@@ -262,368 +262,368 @@ int main(void){
     <span class="n">IsEmpty</span><span class="p">();</span>
     <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
 <span class="p">}</span>
-</code></pre></div></div> <h3 id="括号匹配">括号匹配</h3> <p>123</p> <h3 id="前缀中缀后缀">前缀中缀后缀</h3> <p>123</p> <h2 id="队列">队列</h2> <p>队列与栈不同，队列是FIFO (First In First OUT) 的。 其常用操作有<code class="language-plaintext highlighter-rouge">Enqueue</code>,<code class="language-plaintext highlighter-rouge">Dequeue</code>,<code class="language-plaintext highlighter-rouge">Isempty</code>,<code class="language-plaintext highlighter-rouge">front</code>等。 需要注意的是，每个操作的时间复杂度都是O(1)。</p> <h3 id="使用数组实现队列">使用数组实现队列</h3> <p>在此使用环形队列，默认空队列的front和rear为-1.使用++/–时应注意为： <code class="language-plaintext highlighter-rouge">front = (front + 1 ) % N; //front++</code> <code class="language-plaintext highlighter-rouge">front = (front - 1 + N ) % N; //front--</code> 显然，此时所有的操作时间复杂度都是O(1). 如果队列已满，需要扩展时，时间复杂度提高.</p> <pre><code class="language-C">#include &lt;stdio.h&gt;
-#include &lt;stdlib.h&gt;
-#include &lt;stdbool.h&gt;
+</code></pre></div></div> <h3 id="括号匹配">括号匹配</h3> <p>123</p> <h3 id="前缀中缀后缀">前缀中缀后缀</h3> <p>123</p> <h2 id="队列">队列</h2> <p>队列与栈不同，队列是FIFO (First In First OUT) 的。 其常用操作有<code class="language-plaintext highlighter-rouge">Enqueue</code>,<code class="language-plaintext highlighter-rouge">Dequeue</code>,<code class="language-plaintext highlighter-rouge">Isempty</code>,<code class="language-plaintext highlighter-rouge">front</code>等。 需要注意的是，每个操作的时间复杂度都是O(1)。</p> <h3 id="使用数组实现队列">使用数组实现队列</h3> <p>在此使用环形队列，默认空队列的front和rear为-1.使用++/–时应注意为： <code class="language-plaintext highlighter-rouge">front = (front + 1 ) % N; //front++</code> <code class="language-plaintext highlighter-rouge">front = (front - 1 + N ) % N; //front--</code> 显然，此时所有的操作时间复杂度都是O(1). 如果队列已满，需要扩展时，时间复杂度提高.</p> <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp">
+#include</span> <span class="cpf">&lt;stdlib.h&gt;</span><span class="cp">
+#include</span> <span class="cpf">&lt;stdbool.h&gt;</span><span class="cp">
+</span>
+<span class="cp">#define MAX_SIZE 100
+</span>
+<span class="k">typedef</span> <span class="k">struct</span> <span class="p">{</span>
+    <span class="kt">int</span> <span class="n">data</span><span class="p">[</span><span class="n">MAX_SIZE</span><span class="p">];</span>
+    <span class="kt">int</span> <span class="n">front</span><span class="p">;</span>
+    <span class="kt">int</span> <span class="n">rear</span><span class="p">;</span>
+<span class="p">}</span> <span class="n">Queue</span><span class="p">;</span>
 
-#define MAX_SIZE 100
+<span class="n">bool</span> <span class="nf">Isempty</span><span class="p">(</span><span class="n">Queue</span> <span class="o">*</span><span class="n">q</span><span class="p">){</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">q</span><span class="o">-&gt;</span><span class="n">front</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span> <span class="o">&amp;&amp;</span> <span class="n">q</span><span class="o">-&gt;</span><span class="n">rear</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">){</span>
+        <span class="k">return</span> <span class="nb">true</span><span class="p">;</span>
+    <span class="p">}</span><span class="k">else</span> <span class="k">return</span> <span class="nb">false</span><span class="p">;</span>
+<span class="p">}</span>
 
-typedef struct {
-    int data[MAX_SIZE];
-    int front;
-    int rear;
-} Queue;
+<span class="n">bool</span> <span class="nf">IsFull</span><span class="p">(</span><span class="n">Queue</span> <span class="o">*</span><span class="n">q</span><span class="p">){</span>
+    <span class="k">if</span><span class="p">((</span><span class="n">q</span><span class="o">-&gt;</span><span class="n">rear</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="n">MAX_SIZE</span> <span class="o">==</span> <span class="n">q</span><span class="o">-&gt;</span><span class="n">front</span><span class="p">){</span>
+        <span class="k">return</span> <span class="nb">true</span><span class="p">;</span>
+    <span class="p">}</span><span class="k">else</span> <span class="k">return</span> <span class="nb">false</span><span class="p">;</span>
+<span class="p">}</span>
 
-bool Isempty(Queue *q){
-    if(q-&gt;front == -1 &amp;&amp; q-&gt;rear == -1){
-        return true;
-    }else return false;
-}
+<span class="n">Queue</span> <span class="o">*</span> <span class="nf">Enqueue</span><span class="p">(</span><span class="n">Queue</span> <span class="o">*</span><span class="n">q</span><span class="p">,</span> <span class="kt">int</span> <span class="n">value</span><span class="p">){</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">Isempty</span><span class="p">(</span><span class="n">q</span><span class="p">)){</span>
+        <span class="n">q</span><span class="o">-&gt;</span><span class="n">front</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+        <span class="n">q</span><span class="o">-&gt;</span><span class="n">rear</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="p">}</span>
 
-bool IsFull(Queue *q){
-    if((q-&gt;rear + 1) % MAX_SIZE == q-&gt;front){
-        return true;
-    }else return false;
-}
+    <span class="k">else</span> <span class="k">if</span><span class="p">(</span><span class="n">IsFull</span><span class="p">(</span><span class="n">q</span><span class="p">)){</span>
+        <span class="n">printf</span><span class="p">(</span><span class="s">"The Queue is Full already! </span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+        <span class="k">return</span> <span class="n">q</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">else</span><span class="p">{</span>
+        <span class="n">q</span><span class="o">-&gt;</span><span class="n">rear</span> <span class="o">=</span> <span class="p">(</span><span class="n">q</span><span class="o">-&gt;</span><span class="n">rear</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="n">MAX_SIZE</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="n">q</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">[</span><span class="n">q</span><span class="o">-&gt;</span><span class="n">rear</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span><span class="p">;</span>
+    <span class="k">return</span> <span class="n">q</span><span class="p">;</span>
+<span class="p">}</span>
 
-Queue * Enqueue(Queue *q, int value){
-    if(Isempty(q)){
-        q-&gt;front = 0;
-        q-&gt;rear = 0;
-    }
+<span class="n">Queue</span> <span class="o">*</span> <span class="nf">Dequeue</span><span class="p">(</span><span class="n">Queue</span> <span class="o">*</span><span class="n">q</span><span class="p">){</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">Isempty</span><span class="p">(</span><span class="n">q</span><span class="p">)){</span>
+        <span class="n">printf</span><span class="p">(</span><span class="s">"error! The Queue is Empty already! </span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+        <span class="k">return</span> <span class="n">q</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">else</span> <span class="k">if</span><span class="p">(</span><span class="n">q</span><span class="o">-&gt;</span><span class="n">front</span> <span class="o">==</span> <span class="n">q</span><span class="o">-&gt;</span><span class="n">rear</span><span class="p">){</span> <span class="c1">// 只有一个元素，出队后变空</span>
+        <span class="n">q</span><span class="o">-&gt;</span><span class="n">front</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+        <span class="n">q</span><span class="o">-&gt;</span><span class="n">rear</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">else</span> <span class="p">{</span>
+        <span class="n">q</span><span class="o">-&gt;</span><span class="n">front</span> <span class="o">=</span> <span class="p">(</span><span class="n">q</span><span class="o">-&gt;</span><span class="n">front</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="n">MAX_SIZE</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="n">q</span><span class="p">;</span>
+<span class="p">}</span>
 
-    else if(IsFull(q)){
-        printf("The Queue is Full already! \n");
-        return q;
-    }
-    else{
-        q-&gt;rear = (q-&gt;rear + 1) % MAX_SIZE;
-    }
-    q-&gt;data[q-&gt;rear] = value;
-    return q;
-}
+<span class="kt">void</span> <span class="nf">Print</span><span class="p">(</span><span class="n">Queue</span> <span class="o">*</span><span class="n">q</span><span class="p">){</span>
+    <span class="kt">int</span> <span class="n">front</span> <span class="o">=</span> <span class="n">q</span><span class="o">-&gt;</span><span class="n">front</span><span class="p">;</span>
+    <span class="kt">int</span> <span class="n">rear</span> <span class="o">=</span> <span class="n">q</span><span class="o">-&gt;</span><span class="n">rear</span><span class="p">;</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">Isempty</span><span class="p">(</span><span class="n">q</span><span class="p">))</span> <span class="p">{</span>
+        <span class="n">printf</span><span class="p">(</span><span class="s">"Queue is empty</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+        <span class="k">return</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">while</span><span class="p">((</span><span class="n">front</span> <span class="o">%</span> <span class="n">MAX_SIZE</span><span class="p">)</span> <span class="o">!=</span> <span class="n">rear</span><span class="p">){</span>
+        <span class="n">printf</span><span class="p">(</span><span class="s">"%d "</span><span class="p">,</span> <span class="n">q</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">[</span><span class="n">front</span><span class="p">]);</span>
+        <span class="n">front</span> <span class="o">=</span> <span class="p">(</span><span class="n">front</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="n">MAX_SIZE</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">"%d "</span><span class="p">,</span> <span class="n">q</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">[</span><span class="n">rear</span><span class="p">]);</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">"</span><span class="se">\n</span><span class="s"> "</span><span class="p">);</span>
+<span class="p">}</span>
+<span class="kt">int</span> <span class="nf">main</span><span class="p">(){</span>
+    <span class="n">Queue</span> <span class="o">*</span><span class="n">q</span> <span class="o">=</span> <span class="p">(</span><span class="n">Queue</span> <span class="o">*</span><span class="p">)</span><span class="n">malloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="n">Queue</span><span class="p">));</span>
+    <span class="n">q</span><span class="o">-&gt;</span><span class="n">front</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+    <span class="n">q</span><span class="o">-&gt;</span><span class="n">rear</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+    <span class="n">q</span> <span class="o">=</span> <span class="n">Enqueue</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
+    <span class="n">q</span> <span class="o">=</span> <span class="n">Enqueue</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="mi">2</span><span class="p">);</span>
+    <span class="n">q</span> <span class="o">=</span> <span class="n">Enqueue</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="mi">3</span><span class="p">);</span>
+    <span class="n">q</span> <span class="o">=</span> <span class="n">Enqueue</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="mi">5</span><span class="p">);</span>
+    <span class="n">q</span> <span class="o">=</span> <span class="n">Enqueue</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="mi">6</span><span class="p">);</span> <span class="c1">// 1 2 3 5 6</span>
+    <span class="n">Print</span><span class="p">(</span><span class="n">q</span><span class="p">);</span>
+    <span class="n">q</span> <span class="o">=</span> <span class="n">Dequeue</span><span class="p">(</span><span class="n">q</span><span class="p">);</span> <span class="c1">// 2 3 5 6</span>
+    <span class="n">Print</span><span class="p">(</span><span class="n">q</span><span class="p">);</span>
+    <span class="n">q</span> <span class="o">=</span> <span class="n">Enqueue</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="mi">7</span><span class="p">);</span> <span class="c1">// 2 3 5 6 7</span>
+    <span class="n">Print</span><span class="p">(</span><span class="n">q</span><span class="p">);</span>
+    <span class="n">q</span> <span class="o">=</span> <span class="n">Dequeue</span><span class="p">(</span><span class="n">q</span><span class="p">);</span> <span class="c1">// 3 5 6 7</span>
+    <span class="n">Print</span><span class="p">(</span><span class="n">q</span><span class="p">);</span>
+    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
 
-Queue * Dequeue(Queue *q){
-    if(Isempty(q)){
-        printf("error! The Queue is Empty already! \n");
-        return q;
-    }
-    else if(q-&gt;front == q-&gt;rear){ // 只有一个元素，出队后变空
-        q-&gt;front = -1;
-        q-&gt;rear = -1;
-    }
-    else {
-        q-&gt;front = (q-&gt;front+1) % MAX_SIZE;
-    }
-    return q;
-}
+<span class="p">}</span>
+</code></pre></div></div> <h3 id="使用链表实现队列">使用链表实现队列</h3> <p>可以看出队列的实现实际上就是对一个链表进行头插和尾去(两者可以互换)，可以多使用一个<code class="language-plaintext highlighter-rouge">rear</code>标志来指引</p> <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp">
+#include</span> <span class="cpf">&lt;stdlib.h&gt;</span><span class="cp">
+#include</span> <span class="cpf">&lt;stdbool.h&gt;</span><span class="cp">
+</span>
+<span class="k">struct</span> <span class="n">Node</span> <span class="p">{</span>
+    <span class="kt">int</span> <span class="n">data</span><span class="p">;</span>
+    <span class="k">struct</span> <span class="n">Node</span> <span class="o">*</span><span class="n">next</span><span class="p">;</span>
+<span class="p">};</span>
 
-void Print(Queue *q){
-    int front = q-&gt;front;
-    int rear = q-&gt;rear;
-    if(Isempty(q)) {
-        printf("Queue is empty\n");
-        return;
-    }
-    while((front % MAX_SIZE) != rear){
-        printf("%d ", q-&gt;data[front]);
-        front = (front+1) % MAX_SIZE;
-    }
-    printf("%d ", q-&gt;data[rear]);
-    printf("\n ");
-}
-int main(){
-    Queue *q = (Queue *)malloc(sizeof(Queue));
-    q-&gt;front = -1;
-    q-&gt;rear = -1;
-    q = Enqueue(q, 1);
-    q = Enqueue(q, 2);
-    q = Enqueue(q, 3);
-    q = Enqueue(q, 5);
-    q = Enqueue(q, 6); // 1 2 3 5 6
-    Print(q);
-    q = Dequeue(q); // 2 3 5 6
-    Print(q);
-    q = Enqueue(q, 7); // 2 3 5 6 7
-    Print(q);
-    q = Dequeue(q); // 3 5 6 7
-    Print(q);
-    return 0;
+<span class="k">typedef</span> <span class="k">struct</span> <span class="p">{</span>
+    <span class="k">struct</span> <span class="n">Node</span> <span class="o">*</span><span class="n">front</span><span class="p">;</span>
+    <span class="k">struct</span> <span class="n">Node</span> <span class="o">*</span><span class="n">rear</span><span class="p">;</span>
+<span class="p">}</span> <span class="n">Queue</span><span class="p">;</span>
 
-}
-</code></pre> <h3 id="使用链表实现队列">使用链表实现队列</h3> <p>可以看出队列的实现实际上就是对一个链表进行头插和尾去(两者可以互换)，可以多使用一个<code class="language-plaintext highlighter-rouge">rear</code>标志来指引</p> <pre><code class="language-C">#include &lt;stdio.h&gt;
-#include &lt;stdlib.h&gt;
-#include &lt;stdbool.h&gt;
+<span class="n">bool</span> <span class="nf">Isempty</span><span class="p">(</span><span class="n">Queue</span> <span class="o">*</span><span class="n">q</span><span class="p">){</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">q</span><span class="o">-&gt;</span><span class="n">front</span> <span class="o">==</span> <span class="nb">NULL</span> <span class="o">&amp;&amp;</span> <span class="n">q</span><span class="o">-&gt;</span><span class="n">rear</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">){</span>
+        <span class="k">return</span> <span class="nb">true</span><span class="p">;</span>
+    <span class="p">}</span><span class="k">else</span> <span class="k">return</span> <span class="nb">false</span><span class="p">;</span>
+<span class="p">}</span>
 
-struct Node {
-    int data;
-    struct Node *next;
-};
+<span class="n">Queue</span> <span class="o">*</span> <span class="nf">Enqueue</span><span class="p">(</span><span class="n">Queue</span> <span class="o">*</span><span class="n">q</span><span class="p">,</span> <span class="kt">int</span> <span class="n">value</span><span class="p">){</span>
+    <span class="k">struct</span> <span class="n">Node</span> <span class="o">*</span><span class="n">newNode</span> <span class="o">=</span> <span class="p">(</span><span class="k">struct</span> <span class="n">Node</span> <span class="o">*</span><span class="p">)</span><span class="n">malloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">Node</span><span class="p">));</span>
+    <span class="n">newNode</span><span class="o">-&gt;</span><span class="n">data</span> <span class="o">=</span> <span class="n">value</span><span class="p">;</span>
+    <span class="n">newNode</span><span class="o">-&gt;</span><span class="n">next</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
 
-typedef struct {
-    struct Node *front;
-    struct Node *rear;
-} Queue;
+    <span class="k">if</span><span class="p">(</span><span class="n">Isempty</span><span class="p">(</span><span class="n">q</span><span class="p">)){</span>
+        <span class="n">q</span><span class="o">-&gt;</span><span class="n">front</span> <span class="o">=</span> <span class="n">newNode</span><span class="p">;</span>
+        <span class="n">q</span><span class="o">-&gt;</span><span class="n">rear</span> <span class="o">=</span> <span class="n">newNode</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">else</span> <span class="p">{</span>
+        <span class="n">q</span><span class="o">-&gt;</span><span class="n">rear</span><span class="o">-&gt;</span><span class="n">next</span> <span class="o">=</span> <span class="n">newNode</span><span class="p">;</span>
+        <span class="n">q</span><span class="o">-&gt;</span><span class="n">rear</span> <span class="o">=</span> <span class="n">newNode</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="n">q</span><span class="p">;</span>
+<span class="p">}</span>
 
-bool Isempty(Queue *q){
-    if(q-&gt;front == NULL &amp;&amp; q-&gt;rear == NULL){
-        return true;
-    }else return false;
-}
+<span class="n">Queue</span> <span class="o">*</span> <span class="nf">Dequeue</span><span class="p">(</span><span class="n">Queue</span> <span class="o">*</span><span class="n">q</span><span class="p">){</span>
+    <span class="k">struct</span> <span class="n">Node</span> <span class="o">*</span><span class="n">temp</span> <span class="o">=</span> <span class="n">q</span><span class="o">-&gt;</span><span class="n">front</span><span class="p">;</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">Isempty</span><span class="p">(</span><span class="n">q</span><span class="p">)){</span>
+        <span class="n">printf</span><span class="p">(</span><span class="s">"error! The Queue is Empty already! </span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+        <span class="k">return</span> <span class="n">q</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">else</span> <span class="k">if</span><span class="p">(</span><span class="n">q</span><span class="o">-&gt;</span><span class="n">front</span> <span class="o">==</span> <span class="n">q</span><span class="o">-&gt;</span><span class="n">rear</span><span class="p">){</span> <span class="c1">// 只有一个元素，出队后变空</span>
+        <span class="n">q</span><span class="o">-&gt;</span><span class="n">front</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
+        <span class="n">q</span><span class="o">-&gt;</span><span class="n">rear</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">else</span> <span class="p">{</span>
+        <span class="n">q</span><span class="o">-&gt;</span><span class="n">front</span> <span class="o">=</span> <span class="n">q</span><span class="o">-&gt;</span><span class="n">front</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="n">free</span><span class="p">(</span><span class="n">temp</span><span class="p">);</span>
+    <span class="k">return</span> <span class="n">q</span><span class="p">;</span>
+<span class="p">}</span>
 
-Queue * Enqueue(Queue *q, int value){
-    struct Node *newNode = (struct Node *)malloc(sizeof(struct Node));
-    newNode-&gt;data = value;
-    newNode-&gt;next = NULL;
+<span class="kt">void</span> <span class="nf">Print</span><span class="p">(</span><span class="n">Queue</span> <span class="o">*</span><span class="n">q</span><span class="p">){</span>
+    <span class="k">struct</span> <span class="n">Node</span> <span class="o">*</span><span class="n">current</span> <span class="o">=</span> <span class="n">q</span><span class="o">-&gt;</span><span class="n">front</span><span class="p">;</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">Isempty</span><span class="p">(</span><span class="n">q</span><span class="p">))</span> <span class="p">{</span>
+        <span class="n">printf</span><span class="p">(</span><span class="s">"The Queue is Empty already! </span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+        <span class="k">return</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">while</span><span class="p">(</span><span class="n">current</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">){</span>
+        <span class="n">printf</span><span class="p">(</span><span class="s">"%d "</span><span class="p">,</span> <span class="n">current</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">);</span>
+        <span class="n">current</span> <span class="o">=</span> <span class="n">current</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">"</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+<span class="p">}</span>
 
-    if(Isempty(q)){
-        q-&gt;front = newNode;
-        q-&gt;rear = newNode;
-    }
-    else {
-        q-&gt;rear-&gt;next = newNode;
-        q-&gt;rear = newNode;
-    }
-    return q;
-}
+<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">"This is a Queue implemented with Linked List! </span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+    <span class="n">Queue</span> <span class="o">*</span><span class="n">q</span> <span class="o">=</span> <span class="p">(</span><span class="n">Queue</span> <span class="o">*</span><span class="p">)</span><span class="n">malloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="n">Queue</span><span class="p">));</span>
+    <span class="n">q</span><span class="o">-&gt;</span><span class="n">front</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
+    <span class="n">q</span><span class="o">-&gt;</span><span class="n">rear</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
+    <span class="n">q</span> <span class="o">=</span> <span class="n">Enqueue</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="mi">10</span><span class="p">);</span>
+    <span class="n">q</span> <span class="o">=</span> <span class="n">Enqueue</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="mi">20</span><span class="p">);</span>
+    <span class="n">q</span> <span class="o">=</span> <span class="n">Enqueue</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="mi">30</span><span class="p">);</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">"The Queue after Enqueue: "</span><span class="p">);</span>
+    <span class="n">Print</span><span class="p">(</span><span class="n">q</span><span class="p">);</span>
+    <span class="n">q</span> <span class="o">=</span> <span class="n">Dequeue</span><span class="p">(</span><span class="n">q</span><span class="p">);</span>
+    <span class="n">q</span> <span class="o">=</span> <span class="n">Enqueue</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="mi">40</span><span class="p">);</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">"The Queue after Dequeue: "</span><span class="p">);</span>
+    <span class="n">Print</span><span class="p">(</span><span class="n">q</span><span class="p">);</span>
 
-Queue * Dequeue(Queue *q){
-    struct Node *temp = q-&gt;front;
-    if(Isempty(q)){
-        printf("error! The Queue is Empty already! \n");
-        return q;
-    }
-    else if(q-&gt;front == q-&gt;rear){ // 只有一个元素，出队后变空
-        q-&gt;front = NULL;
-        q-&gt;rear = NULL;
-    }
-    else {
-        q-&gt;front = q-&gt;front-&gt;next;
-    }
-    free(temp);
-    return q;
-}
+    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div> <h2 id="树">树</h2> <p>一种表示层级的数据结构 关键词：<code class="language-plaintext highlighter-rouge">root 根</code> <code class="language-plaintext highlighter-rouge">children 子节点</code> <code class="language-plaintext highlighter-rouge">Parent 父节点</code> <code class="language-plaintext highlighter-rouge">sibling 兄弟节点</code> <code class="language-plaintext highlighter-rouge">leaf 叶子节点</code> <code class="language-plaintext highlighter-rouge">内部节点</code></p> <ul> <li>遍历一棵树的时候是单向的</li> <li>每个子节点向下又能视为一颗树，可以使用递归的思想</li> <li>每有N个节点，就有N-1条边<code class="language-plaintext highlighter-rouge">edge</code></li> <li><code class="language-plaintext highlighter-rouge">Depth</code>节点深度为从根节点开始到该节点的边数</li> <li><code class="language-plaintext highlighter-rouge">Height</code>节点高度是从这个节点开始到叶子节点的最远距离</li> <li>树的高度被定义为根节点的高度</li> </ul> <p><img src="/assets/img/blog/data-structures/image.png" alt="树的节点与层级结构示意图"/></p> <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">struct</span> <span class="n">tree</span><span class="p">{</span>
+    <span class="kt">int</span> <span class="n">data</span><span class="p">;</span>
+    <span class="k">struct</span> <span class="n">tree</span> <span class="o">*</span><span class="n">left</span><span class="p">;</span>
+    <span class="k">struct</span> <span class="n">tree</span> <span class="o">*</span><span class="n">right</span><span class="p">;</span>
+<span class="p">};</span>
+</code></pre></div></div> <h3 id="二叉树">二叉树</h3> <p>设定root为第0层，从这以后的数学推论从0开始。 唯一的条件是一个节点不能有超过两个子节点</p> <ul> <li>严格二叉树：树中的每个非叶子节点都拥有两个子节点。如果一个节点有子节点，那么它必须有两个（一左一右）。</li> <li>完全二叉树：完全二叉树要求除最后一层外所有层填满，且最后一层节点靠左连续对齐。</li> <li>完美二叉树：所有节点都被填满。</li> </ul> <blockquote> <ul> <li>完美二叉树最大节点数：\(2^{h+1} - 1\)</li> <li>完美二叉树根据节点计算高度: \(h = \log_2(n+1) - 1\)</li> <li>完全二叉树的高度：\(h = \lfloor \log_2n \rfloor\) <img src="/assets/img/blog/data-structures/image-1.png" alt="完全二叉树示意图"/> <img src="/assets/img/blog/data-structures/image-2.png" alt="完美二叉树示意图"/> <strong>在节点数一定的情况下完全二叉树的高度更小，时间复杂度更小</strong></li> </ul> </blockquote> <p>平衡二叉树：计算该节点的左子树和右子树高度的差（令空子树的高度为-1），差值为不大于k。一般k = 1.</p> <p><img src="/assets/img/blog/data-structures/image-3.png" alt="完全二叉树高度示意图"/> 只针对完全二叉树成立</p> <h4 id="二叉搜索树binary-search-tree">二叉搜索树(Binary Search Tree)</h4> <table> <thead> <tr> <th> </th> <th>Array(unsorted)</th> <th>Linked List</th> <th>Array(sorted)</th> <th>BST(balanced)</th> </tr> </thead> <tbody> <tr> <td>Search(x)</td> <td>O(n)</td> <td>O(n)</td> <td>O(logn)</td> <td>O(logn)</td> </tr> <tr> <td>Insert(x)</td> <td>O(1)</td> <td>O(1)</td> <td>O(n)</td> <td>O(logn)</td> </tr> <tr> <td>Remove(x)</td> <td>O(n)</td> <td>O(n)</td> <td>O(n)</td> <td>O(logn)</td> </tr> </tbody> </table> <p>BST定义：所有左子树上的节点值都比该节点的值要小，所有右子树上的节点值都比该节点的值要大。</p> <h4 id="二叉树的遍历">二叉树的遍历</h4> <p><img src="/assets/img/blog/data-structures/image-4.png" alt="二叉树遍历顺序示意图"/></p> <ul> <li>广度遍历 <ul> <li>层级遍历: F D J B E G K A C I H <ul> <li>时间复杂度O(n) 空间复杂度最好O(1) 最差O(n) 平均O(n)</li> </ul> </li> </ul> </li> </ul> <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp">
+#include</span> <span class="cpf">&lt;stdlib.h&gt;</span><span class="cp">
+#include</span> <span class="cpf">&lt;stdbool.h&gt;</span><span class="cp">
+</span>
+<span class="k">struct</span> <span class="n">TreeNode</span>
+<span class="p">{</span>
+    <span class="kt">char</span> <span class="n">data</span><span class="p">;</span>
+    <span class="k">struct</span> <span class="n">TreeNode</span> <span class="o">*</span><span class="n">left</span><span class="p">;</span>
+    <span class="k">struct</span> <span class="n">TreeNode</span> <span class="o">*</span><span class="n">right</span><span class="p">;</span>
+<span class="p">};</span>
 
-void Print(Queue *q){
-    struct Node *current = q-&gt;front;
-    if(Isempty(q)) {
-        printf("The Queue is Empty already! \n");
-        return;
-    }
-    while(current != NULL){
-        printf("%d ", current-&gt;data);
-        current = current-&gt;next;
-    }
-    printf("\n");
-}
+<span class="c1">// 先实现一个队列</span>
+<span class="k">struct</span> <span class="n">Node</span>
+<span class="p">{</span>
+    <span class="k">struct</span> <span class="n">TreeNode</span> <span class="o">*</span><span class="n">data</span><span class="p">;</span>
+    <span class="k">struct</span> <span class="n">Node</span> <span class="o">*</span><span class="n">next</span><span class="p">;</span>
+<span class="p">};</span>
 
-int main() {
-    printf("This is a Queue implemented with Linked List! \n");
-    Queue *q = (Queue *)malloc(sizeof(Queue));
-    q-&gt;front = NULL;
-    q-&gt;rear = NULL;
-    q = Enqueue(q, 10);
-    q = Enqueue(q, 20);
-    q = Enqueue(q, 30);
-    printf("The Queue after Enqueue: ");
-    Print(q);
-    q = Dequeue(q);
-    q = Enqueue(q, 40);
-    printf("The Queue after Dequeue: ");
-    Print(q);
+<span class="k">typedef</span> <span class="k">struct</span>
+<span class="p">{</span>
+    <span class="k">struct</span> <span class="n">Node</span> <span class="o">*</span><span class="n">front</span><span class="p">;</span>
+    <span class="k">struct</span> <span class="n">Node</span> <span class="o">*</span><span class="n">rear</span><span class="p">;</span>
+<span class="p">}</span> <span class="n">Queue</span><span class="p">;</span>
 
-    return 0;
-}
-</code></pre> <h2 id="树">树</h2> <p>一种表示层级的数据结构 关键词：<code class="language-plaintext highlighter-rouge">root 根</code> <code class="language-plaintext highlighter-rouge">children 子节点</code> <code class="language-plaintext highlighter-rouge">Parent 父节点</code> <code class="language-plaintext highlighter-rouge">sibling 兄弟节点</code> <code class="language-plaintext highlighter-rouge">leaf 叶子节点</code> <code class="language-plaintext highlighter-rouge">内部节点</code></p> <ul> <li>遍历一棵树的时候是单向的</li> <li>每个子节点向下又能视为一颗树，可以使用递归的思想</li> <li>每有N个节点，就有N-1条边<code class="language-plaintext highlighter-rouge">edge</code></li> <li><code class="language-plaintext highlighter-rouge">Depth</code>节点深度为从根节点开始到该节点的边数</li> <li><code class="language-plaintext highlighter-rouge">Height</code>节点高度是从这个节点开始到叶子节点的最远距离</li> <li>树的高度被定义为根节点的高度</li> </ul> <p><img src="/assets/img/blog/data-structures/image.png" alt="树的节点与层级结构示意图"/></p> <pre><code class="language-C">struct tree{
-    int data;
-    struct tree *left;
-    struct tree *right;
-};
-</code></pre> <h3 id="二叉树">二叉树</h3> <p>设定root为第0层，从这以后的数学推论从0开始。 唯一的条件是一个节点不能有超过两个子节点</p> <ul> <li>严格二叉树：树中的每个非叶子节点都拥有两个子节点。如果一个节点有子节点，那么它必须有两个（一左一右）。</li> <li>完全二叉树：完全二叉树要求除最后一层外所有层填满，且最后一层节点靠左连续对齐。</li> <li>完美二叉树：所有节点都被填满。</li> </ul> <blockquote> <ul> <li>完美二叉树最大节点数：\(2^{h+1} - 1\)</li> <li>完美二叉树根据节点计算高度: \(h = \log_2(n+1) - 1\)</li> <li>完全二叉树的高度：\(h = \lfloor \log_2n \rfloor\) <img src="/assets/img/blog/data-structures/image-1.png" alt="完全二叉树示意图"/> <img src="/assets/img/blog/data-structures/image-2.png" alt="完美二叉树示意图"/> <strong>在节点数一定的情况下完全二叉树的高度更小，时间复杂度更小</strong></li> </ul> </blockquote> <p>平衡二叉树：计算该节点的左子树和右子树高度的差（令空子树的高度为-1），差值为不大于k。一般k = 1.</p> <p><img src="/assets/img/blog/data-structures/image-3.png" alt="完全二叉树高度示意图"/> 只针对完全二叉树成立</p> <h4 id="二叉搜索树binary-search-tree">二叉搜索树(Binary Search Tree)</h4> <table> <thead> <tr> <th> </th> <th>Array(unsorted)</th> <th>Linked List</th> <th>Array(sorted)</th> <th>BST(balanced)</th> </tr> </thead> <tbody> <tr> <td>Search(x)</td> <td>O(n)</td> <td>O(n)</td> <td>O(logn)</td> <td>O(logn)</td> </tr> <tr> <td>Insert(x)</td> <td>O(1)</td> <td>O(1)</td> <td>O(n)</td> <td>O(logn)</td> </tr> <tr> <td>Remove(x)</td> <td>O(n)</td> <td>O(n)</td> <td>O(n)</td> <td>O(logn)</td> </tr> </tbody> </table> <p>BST定义：所有左子树上的节点值都比该节点的值要小，所有右子树上的节点值都比该节点的值要大。</p> <h4 id="二叉树的遍历">二叉树的遍历</h4> <p><img src="/assets/img/blog/data-structures/image-4.png" alt="二叉树遍历顺序示意图"/></p> <ul> <li>广度遍历 <ul> <li>层级遍历: F D J B E G K A C I H <ul> <li>时间复杂度O(n) 空间复杂度最好O(1) 最差O(n) 平均O(n)</li> </ul> </li> </ul> </li> </ul> <pre><code class="language-C">#include &lt;stdio.h&gt;
-#include &lt;stdlib.h&gt;
-#include &lt;stdbool.h&gt;
+<span class="n">bool</span> <span class="nf">IsEmpty</span><span class="p">(</span><span class="n">Queue</span> <span class="o">*</span><span class="n">q</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">q</span><span class="o">-&gt;</span><span class="n">front</span> <span class="o">==</span> <span class="nb">NULL</span> <span class="o">&amp;&amp;</span> <span class="n">q</span><span class="o">-&gt;</span><span class="n">rear</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="k">return</span> <span class="nb">true</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">else</span>
+        <span class="k">return</span> <span class="nb">false</span><span class="p">;</span>
+<span class="p">}</span>
 
-struct TreeNode
-{
-    char data;
-    struct TreeNode *left;
-    struct TreeNode *right;
-};
+<span class="n">Queue</span> <span class="o">*</span><span class="nf">Enqueue</span><span class="p">(</span><span class="n">Queue</span> <span class="o">*</span><span class="n">q</span><span class="p">,</span> <span class="k">struct</span> <span class="n">TreeNode</span> <span class="o">*</span><span class="n">data</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">struct</span> <span class="n">Node</span> <span class="o">*</span><span class="n">temp</span> <span class="o">=</span> <span class="p">(</span><span class="k">struct</span> <span class="n">Node</span> <span class="o">*</span><span class="p">)</span><span class="n">malloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">Node</span><span class="p">));</span>
+    <span class="n">temp</span><span class="o">-&gt;</span><span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="p">;</span>
+    <span class="n">temp</span><span class="o">-&gt;</span><span class="n">next</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">IsEmpty</span><span class="p">(</span><span class="n">q</span><span class="p">))</span>
+    <span class="p">{</span>
+        <span class="n">q</span><span class="o">-&gt;</span><span class="n">front</span> <span class="o">=</span> <span class="n">temp</span><span class="p">;</span>
+        <span class="n">q</span><span class="o">-&gt;</span><span class="n">rear</span> <span class="o">=</span> <span class="n">temp</span><span class="p">;</span>
+        <span class="k">return</span> <span class="n">q</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">else</span>
+    <span class="p">{</span>
+        <span class="n">q</span><span class="o">-&gt;</span><span class="n">rear</span><span class="o">-&gt;</span><span class="n">next</span> <span class="o">=</span> <span class="n">temp</span><span class="p">;</span>
+        <span class="n">q</span><span class="o">-&gt;</span><span class="n">rear</span> <span class="o">=</span> <span class="n">temp</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="n">q</span><span class="p">;</span>
+<span class="p">}</span>
 
-// 先实现一个队列
-struct Node
-{
-    struct TreeNode *data;
-    struct Node *next;
-};
+<span class="n">Queue</span> <span class="o">*</span><span class="nf">Dequeue</span><span class="p">(</span><span class="n">Queue</span> <span class="o">*</span><span class="n">q</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">struct</span> <span class="n">Node</span> <span class="o">*</span><span class="n">temp</span> <span class="o">=</span> <span class="n">q</span><span class="o">-&gt;</span><span class="n">front</span><span class="p">;</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">IsEmpty</span><span class="p">(</span><span class="n">q</span><span class="p">))</span>
+    <span class="p">{</span>
+        <span class="n">printf</span><span class="p">(</span><span class="s">"The Queue is empty already! </span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+        <span class="k">return</span> <span class="n">q</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">q</span><span class="o">-&gt;</span><span class="n">front</span> <span class="o">==</span> <span class="n">q</span><span class="o">-&gt;</span><span class="n">rear</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="n">q</span><span class="o">-&gt;</span><span class="n">front</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
+        <span class="n">q</span><span class="o">-&gt;</span><span class="n">rear</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">else</span>
+    <span class="p">{</span>
+        <span class="n">q</span><span class="o">-&gt;</span><span class="n">front</span> <span class="o">=</span> <span class="n">q</span><span class="o">-&gt;</span><span class="n">front</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="n">free</span><span class="p">(</span><span class="n">temp</span><span class="p">);</span>
+    <span class="k">return</span> <span class="n">q</span><span class="p">;</span>
+<span class="p">}</span>
 
-typedef struct
-{
-    struct Node *front;
-    struct Node *rear;
-} Queue;
+<span class="c1">// 实现树的层序遍历</span>
+<span class="kt">void</span> <span class="nf">LevelOrder</span><span class="p">(</span><span class="k">struct</span> <span class="n">TreeNode</span> <span class="o">*</span><span class="n">root</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">root</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="n">printf</span><span class="p">(</span><span class="s">"Empty tree! </span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+        <span class="k">return</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="n">Queue</span> <span class="o">*</span><span class="n">q</span> <span class="o">=</span> <span class="p">(</span><span class="n">Queue</span> <span class="o">*</span><span class="p">)</span><span class="n">malloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="n">Queue</span><span class="p">));</span>
+    <span class="n">q</span><span class="o">-&gt;</span><span class="n">front</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
+    <span class="n">q</span><span class="o">-&gt;</span><span class="n">rear</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
+    <span class="n">q</span> <span class="o">=</span> <span class="n">Enqueue</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">root</span><span class="p">);</span>
+    <span class="k">while</span> <span class="p">(</span><span class="o">!</span><span class="n">IsEmpty</span><span class="p">(</span><span class="n">q</span><span class="p">))</span>
+    <span class="p">{</span>
+        <span class="k">struct</span> <span class="n">TreeNode</span> <span class="o">*</span><span class="n">current</span> <span class="o">=</span> <span class="n">q</span><span class="o">-&gt;</span><span class="n">front</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">;</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">current</span><span class="o">-&gt;</span><span class="n">left</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span>
+        <span class="p">{</span>
+            <span class="n">q</span> <span class="o">=</span> <span class="n">Enqueue</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">current</span><span class="o">-&gt;</span><span class="n">left</span><span class="p">);</span>
+        <span class="p">}</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">current</span><span class="o">-&gt;</span><span class="n">right</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span>
+        <span class="p">{</span>
+            <span class="n">q</span> <span class="o">=</span> <span class="n">Enqueue</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">current</span><span class="o">-&gt;</span><span class="n">right</span><span class="p">);</span>
+        <span class="p">}</span>
+        <span class="n">printf</span><span class="p">(</span><span class="s">"%c"</span><span class="p">,</span> <span class="n">current</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">);</span>
+        <span class="n">q</span> <span class="o">=</span> <span class="n">Dequeue</span><span class="p">(</span><span class="n">q</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">"</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
 
-bool IsEmpty(Queue *q)
-{
-    if (q-&gt;front == NULL &amp;&amp; q-&gt;rear == NULL)
-    {
-        return true;
-    }
-    else
-        return false;
-}
+    <span class="n">free</span><span class="p">(</span><span class="n">q</span><span class="p">);</span>
+<span class="p">}</span>
 
-Queue *Enqueue(Queue *q, struct TreeNode *data)
-{
-    struct Node *temp = (struct Node *)malloc(sizeof(struct Node));
-    temp-&gt;data = data;
-    temp-&gt;next = NULL;
-    if (IsEmpty(q))
-    {
-        q-&gt;front = temp;
-        q-&gt;rear = temp;
-        return q;
-    }
-    else
-    {
-        q-&gt;rear-&gt;next = temp;
-        q-&gt;rear = temp;
-    }
-    return q;
-}
+<span class="c1">// 辅助创建树节点的函数</span>
+<span class="k">struct</span> <span class="n">TreeNode</span> <span class="o">*</span><span class="nf">createNode</span><span class="p">(</span><span class="kt">char</span> <span class="n">data</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">struct</span> <span class="n">TreeNode</span> <span class="o">*</span><span class="n">newNode</span> <span class="o">=</span> <span class="p">(</span><span class="k">struct</span> <span class="n">TreeNode</span> <span class="o">*</span><span class="p">)</span><span class="n">malloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">TreeNode</span><span class="p">));</span>
+    <span class="n">newNode</span><span class="o">-&gt;</span><span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="p">;</span>
+    <span class="n">newNode</span><span class="o">-&gt;</span><span class="n">left</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
+    <span class="n">newNode</span><span class="o">-&gt;</span><span class="n">right</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
+    <span class="k">return</span> <span class="n">newNode</span><span class="p">;</span>
+<span class="p">}</span>
 
-Queue *Dequeue(Queue *q)
-{
-    struct Node *temp = q-&gt;front;
-    if (IsEmpty(q))
-    {
-        printf("The Queue is empty already! \n");
-        return q;
-    }
-    else if (q-&gt;front == q-&gt;rear)
-    {
-        q-&gt;front = NULL;
-        q-&gt;rear = NULL;
-    }
-    else
-    {
-        q-&gt;front = q-&gt;front-&gt;next;
-    }
-    free(temp);
-    return q;
-}
-
-// 实现树的层序遍历
-void LevelOrder(struct TreeNode *root)
-{
-    if (root == NULL)
-    {
-        printf("Empty tree! \n");
-        return;
-    }
-    Queue *q = (Queue *)malloc(sizeof(Queue));
-    q-&gt;front = NULL;
-    q-&gt;rear = NULL;
-    q = Enqueue(q, root);
-    while (!IsEmpty(q))
-    {
-        struct TreeNode *current = q-&gt;front-&gt;data;
-        if (current-&gt;left != NULL)
-        {
-            q = Enqueue(q, current-&gt;left);
-        }
-        if (current-&gt;right != NULL)
-        {
-            q = Enqueue(q, current-&gt;right);
-        }
-        printf("%c", current-&gt;data);
-        q = Dequeue(q);
-    }
-    printf("\n");
-
-    free(q);
-}
-
-// 辅助创建树节点的函数
-struct TreeNode *createNode(char data)
-{
-    struct TreeNode *newNode = (struct TreeNode *)malloc(sizeof(struct TreeNode));
-    newNode-&gt;data = data;
-    newNode-&gt;left = NULL;
-    newNode-&gt;right = NULL;
-    return newNode;
-}
-
-int main()
-{
-    /* 构造一棵简单的树用于测试:
+<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span>
+<span class="p">{</span>
+    <span class="cm">/* 构造一棵简单的树用于测试:
             A
            / \
           B   C
          / \   \
         D   E   F
-    */
-    struct TreeNode *root = createNode('A');
-    root-&gt;left = createNode('B');
-    root-&gt;right = createNode('C');
-    root-&gt;left-&gt;left = createNode('D');
-    root-&gt;left-&gt;right = createNode('E');
-    root-&gt;right-&gt;right = createNode('F');
+    */</span>
+    <span class="k">struct</span> <span class="n">TreeNode</span> <span class="o">*</span><span class="n">root</span> <span class="o">=</span> <span class="n">createNode</span><span class="p">(</span><span class="sc">'A'</span><span class="p">);</span>
+    <span class="n">root</span><span class="o">-&gt;</span><span class="n">left</span> <span class="o">=</span> <span class="n">createNode</span><span class="p">(</span><span class="sc">'B'</span><span class="p">);</span>
+    <span class="n">root</span><span class="o">-&gt;</span><span class="n">right</span> <span class="o">=</span> <span class="n">createNode</span><span class="p">(</span><span class="sc">'C'</span><span class="p">);</span>
+    <span class="n">root</span><span class="o">-&gt;</span><span class="n">left</span><span class="o">-&gt;</span><span class="n">left</span> <span class="o">=</span> <span class="n">createNode</span><span class="p">(</span><span class="sc">'D'</span><span class="p">);</span>
+    <span class="n">root</span><span class="o">-&gt;</span><span class="n">left</span><span class="o">-&gt;</span><span class="n">right</span> <span class="o">=</span> <span class="n">createNode</span><span class="p">(</span><span class="sc">'E'</span><span class="p">);</span>
+    <span class="n">root</span><span class="o">-&gt;</span><span class="n">right</span><span class="o">-&gt;</span><span class="n">right</span> <span class="o">=</span> <span class="n">createNode</span><span class="p">(</span><span class="sc">'F'</span><span class="p">);</span>
 
-    printf("Level Order Traversal: ");
-    LevelOrder(root); // 期望输出: A B C D E F
-    return 0;
-}
-</code></pre> <ul> <li>深度遍历 <ul> <li><code class="language-plaintext highlighter-rouge">&lt;root&gt; &lt;left&gt; &lt;right&gt;</code> – 前序遍历 <code class="language-plaintext highlighter-rouge">DLR</code> FDBACEJGIHK <ul> <li><code class="language-plaintext highlighter-rouge">&lt;left&gt; &lt;root&gt; &lt;right&gt;</code> – 中序遍历 <code class="language-plaintext highlighter-rouge">LDR</code> ABCDEFGHIJK</li> <li><code class="language-plaintext highlighter-rouge">&lt;left&gt; &lt;right&gt; &lt;root&gt;</code> – 后序遍历 <code class="language-plaintext highlighter-rouge">LRD</code> ACBEDHIGKJF</li> <li>时间复杂度O(n) 空间复杂度O(h) 最差O(n) 最好/平均O(logn)</li> </ul> </li> </ul> </li> </ul> <pre><code class="language-C">#include &lt;stdio.h&gt;
-#include &lt;stdlib.h&gt;
-#include &lt;stdbool.h&gt;
+    <span class="n">printf</span><span class="p">(</span><span class="s">"Level Order Traversal: "</span><span class="p">);</span>
+    <span class="n">LevelOrder</span><span class="p">(</span><span class="n">root</span><span class="p">);</span> <span class="c1">// 期望输出: A B C D E F</span>
+    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div> <ul> <li>深度遍历 <ul> <li><code class="language-plaintext highlighter-rouge">&lt;root&gt; &lt;left&gt; &lt;right&gt;</code> – 前序遍历 <code class="language-plaintext highlighter-rouge">DLR</code> FDBACEJGIHK <ul> <li><code class="language-plaintext highlighter-rouge">&lt;left&gt; &lt;root&gt; &lt;right&gt;</code> – 中序遍历 <code class="language-plaintext highlighter-rouge">LDR</code> ABCDEFGHIJK</li> <li><code class="language-plaintext highlighter-rouge">&lt;left&gt; &lt;right&gt; &lt;root&gt;</code> – 后序遍历 <code class="language-plaintext highlighter-rouge">LRD</code> ACBEDHIGKJF</li> <li>时间复杂度O(n) 空间复杂度O(h) 最差O(n) 最好/平均O(logn)</li> </ul> </li> </ul> </li> </ul> <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp">
+#include</span> <span class="cpf">&lt;stdlib.h&gt;</span><span class="cp">
+#include</span> <span class="cpf">&lt;stdbool.h&gt;</span><span class="cp">
+</span>
+<span class="k">struct</span> <span class="n">TreeNode</span>
+<span class="p">{</span>
+    <span class="kt">char</span> <span class="n">data</span><span class="p">;</span>
+    <span class="k">struct</span> <span class="n">TreeNode</span> <span class="o">*</span><span class="n">left</span><span class="p">;</span>
+    <span class="k">struct</span> <span class="n">TreeNode</span> <span class="o">*</span><span class="n">right</span><span class="p">;</span>
+<span class="p">};</span>
 
-struct TreeNode
-{
-    char data;
-    struct TreeNode *left;
-    struct TreeNode *right;
-};
+<span class="c1">// 辅助创建树节点的函数</span>
+<span class="k">struct</span> <span class="n">TreeNode</span> <span class="o">*</span><span class="nf">createNode</span><span class="p">(</span><span class="kt">char</span> <span class="n">data</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">struct</span> <span class="n">TreeNode</span> <span class="o">*</span><span class="n">newNode</span> <span class="o">=</span> <span class="p">(</span><span class="k">struct</span> <span class="n">TreeNode</span> <span class="o">*</span><span class="p">)</span><span class="n">malloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">TreeNode</span><span class="p">));</span>
+    <span class="n">newNode</span><span class="o">-&gt;</span><span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="p">;</span>
+    <span class="n">newNode</span><span class="o">-&gt;</span><span class="n">left</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
+    <span class="n">newNode</span><span class="o">-&gt;</span><span class="n">right</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
+    <span class="k">return</span> <span class="n">newNode</span><span class="p">;</span>
+<span class="p">}</span>
 
-// 辅助创建树节点的函数
-struct TreeNode *createNode(char data)
-{
-    struct TreeNode *newNode = (struct TreeNode *)malloc(sizeof(struct TreeNode));
-    newNode-&gt;data = data;
-    newNode-&gt;left = NULL;
-    newNode-&gt;right = NULL;
-    return newNode;
-}
+<span class="kt">void</span> <span class="nf">PreOrder</span><span class="p">(</span><span class="k">struct</span> <span class="n">TreeNode</span> <span class="o">*</span><span class="n">root</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">root</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span>
+        <span class="k">return</span><span class="p">;</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">"%c "</span><span class="p">,</span> <span class="n">root</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">);</span>
+    <span class="n">PreOrder</span><span class="p">(</span><span class="n">root</span><span class="o">-&gt;</span><span class="n">left</span><span class="p">);</span>
+    <span class="n">PreOrder</span><span class="p">(</span><span class="n">root</span><span class="o">-&gt;</span><span class="n">right</span><span class="p">);</span>
+<span class="p">}</span>
 
-void PreOrder(struct TreeNode *root)
-{
-    if (root == NULL)
-        return;
-    printf("%c ", root-&gt;data);
-    PreOrder(root-&gt;left);
-    PreOrder(root-&gt;right);
-}
+<span class="kt">void</span> <span class="nf">InOrder</span><span class="p">(</span><span class="k">struct</span> <span class="n">TreeNode</span> <span class="o">*</span><span class="n">root</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">root</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span>
+        <span class="k">return</span><span class="p">;</span>
+    <span class="n">InOrder</span><span class="p">(</span><span class="n">root</span><span class="o">-&gt;</span><span class="n">left</span><span class="p">);</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">"%c "</span><span class="p">,</span> <span class="n">root</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">);</span>
+    <span class="n">InOrder</span><span class="p">(</span><span class="n">root</span><span class="o">-&gt;</span><span class="n">right</span><span class="p">);</span>
+<span class="p">}</span>
 
-void InOrder(struct TreeNode *root)
-{
-    if (root == NULL)
-        return;
-    InOrder(root-&gt;left);
-    printf("%c ", root-&gt;data);
-    InOrder(root-&gt;right);
-}
-
-void PostOrder(struct TreeNode *root)
-{
-    if (root == NULL)
-        return;
-    PostOrder(root-&gt;left);
-    PostOrder(root-&gt;right);
-    printf("%c ", root-&gt;data);
-}
-int main()
-{
-    /* 构造一棵简单的树用于测试:
+<span class="kt">void</span> <span class="nf">PostOrder</span><span class="p">(</span><span class="k">struct</span> <span class="n">TreeNode</span> <span class="o">*</span><span class="n">root</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">root</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span>
+        <span class="k">return</span><span class="p">;</span>
+    <span class="n">PostOrder</span><span class="p">(</span><span class="n">root</span><span class="o">-&gt;</span><span class="n">left</span><span class="p">);</span>
+    <span class="n">PostOrder</span><span class="p">(</span><span class="n">root</span><span class="o">-&gt;</span><span class="n">right</span><span class="p">);</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">"%c "</span><span class="p">,</span> <span class="n">root</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">);</span>
+<span class="p">}</span>
+<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span>
+<span class="p">{</span>
+    <span class="cm">/* 构造一棵简单的树用于测试:
               F
            /    \
           D      J
@@ -633,328 +633,328 @@ int main()
       A   C      I
                  /
                 H
-    */
-    struct TreeNode *root = createNode('F');
-    root-&gt;left = createNode('D');
-    root-&gt;right = createNode('J');
-    root-&gt;left-&gt;left = createNode('B');
-    root-&gt;left-&gt;right = createNode('E');
-    root-&gt;left-&gt;left-&gt;left = createNode('A');
-    root-&gt;left-&gt;left-&gt;right = createNode('C');
-    root-&gt;right-&gt;left = createNode('G');
-    root-&gt;right-&gt;left-&gt;right = createNode('I');
-    root-&gt;right-&gt;left-&gt;right-&gt;left = createNode('H');
-    root-&gt;right-&gt;right = createNode('K');
-    printf("PreOrder: ");
-    PreOrder(root);
-    printf("\nInOrder: ");
-    InOrder(root);
-    printf("\nPostOrder: ");
-    PostOrder(root);
+    */</span>
+    <span class="k">struct</span> <span class="n">TreeNode</span> <span class="o">*</span><span class="n">root</span> <span class="o">=</span> <span class="n">createNode</span><span class="p">(</span><span class="sc">'F'</span><span class="p">);</span>
+    <span class="n">root</span><span class="o">-&gt;</span><span class="n">left</span> <span class="o">=</span> <span class="n">createNode</span><span class="p">(</span><span class="sc">'D'</span><span class="p">);</span>
+    <span class="n">root</span><span class="o">-&gt;</span><span class="n">right</span> <span class="o">=</span> <span class="n">createNode</span><span class="p">(</span><span class="sc">'J'</span><span class="p">);</span>
+    <span class="n">root</span><span class="o">-&gt;</span><span class="n">left</span><span class="o">-&gt;</span><span class="n">left</span> <span class="o">=</span> <span class="n">createNode</span><span class="p">(</span><span class="sc">'B'</span><span class="p">);</span>
+    <span class="n">root</span><span class="o">-&gt;</span><span class="n">left</span><span class="o">-&gt;</span><span class="n">right</span> <span class="o">=</span> <span class="n">createNode</span><span class="p">(</span><span class="sc">'E'</span><span class="p">);</span>
+    <span class="n">root</span><span class="o">-&gt;</span><span class="n">left</span><span class="o">-&gt;</span><span class="n">left</span><span class="o">-&gt;</span><span class="n">left</span> <span class="o">=</span> <span class="n">createNode</span><span class="p">(</span><span class="sc">'A'</span><span class="p">);</span>
+    <span class="n">root</span><span class="o">-&gt;</span><span class="n">left</span><span class="o">-&gt;</span><span class="n">left</span><span class="o">-&gt;</span><span class="n">right</span> <span class="o">=</span> <span class="n">createNode</span><span class="p">(</span><span class="sc">'C'</span><span class="p">);</span>
+    <span class="n">root</span><span class="o">-&gt;</span><span class="n">right</span><span class="o">-&gt;</span><span class="n">left</span> <span class="o">=</span> <span class="n">createNode</span><span class="p">(</span><span class="sc">'G'</span><span class="p">);</span>
+    <span class="n">root</span><span class="o">-&gt;</span><span class="n">right</span><span class="o">-&gt;</span><span class="n">left</span><span class="o">-&gt;</span><span class="n">right</span> <span class="o">=</span> <span class="n">createNode</span><span class="p">(</span><span class="sc">'I'</span><span class="p">);</span>
+    <span class="n">root</span><span class="o">-&gt;</span><span class="n">right</span><span class="o">-&gt;</span><span class="n">left</span><span class="o">-&gt;</span><span class="n">right</span><span class="o">-&gt;</span><span class="n">left</span> <span class="o">=</span> <span class="n">createNode</span><span class="p">(</span><span class="sc">'H'</span><span class="p">);</span>
+    <span class="n">root</span><span class="o">-&gt;</span><span class="n">right</span><span class="o">-&gt;</span><span class="n">right</span> <span class="o">=</span> <span class="n">createNode</span><span class="p">(</span><span class="sc">'K'</span><span class="p">);</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">"PreOrder: "</span><span class="p">);</span>
+    <span class="n">PreOrder</span><span class="p">(</span><span class="n">root</span><span class="p">);</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">"</span><span class="se">\n</span><span class="s">InOrder: "</span><span class="p">);</span>
+    <span class="n">InOrder</span><span class="p">(</span><span class="n">root</span><span class="p">);</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">"</span><span class="se">\n</span><span class="s">PostOrder: "</span><span class="p">);</span>
+    <span class="n">PostOrder</span><span class="p">(</span><span class="n">root</span><span class="p">);</span>
 
-    return 0;
-}
-</code></pre> <h4 id="判断是否为二叉搜索树">判断是否为二叉搜索树</h4> <ol> <li>使用递归方法，判断左子树中的每个元素都要小于当前root节点的data，右子树每个元素都要大于当前root的data，循环执行直到跳出。</li> </ol> <pre><code class="language-C">#include &lt;stdio.h&gt;
-#include &lt;stdlib.h&gt;
-#include &lt;stdbool.h&gt;
+    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div> <h4 id="判断是否为二叉搜索树">判断是否为二叉搜索树</h4> <ol> <li>使用递归方法，判断左子树中的每个元素都要小于当前root节点的data，右子树每个元素都要大于当前root的data，循环执行直到跳出。</li> </ol> <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp">
+#include</span> <span class="cpf">&lt;stdlib.h&gt;</span><span class="cp">
+#include</span> <span class="cpf">&lt;stdbool.h&gt;</span><span class="cp">
+</span>
+<span class="k">struct</span> <span class="n">Node</span>
+<span class="p">{</span>
+    <span class="kt">int</span> <span class="n">data</span><span class="p">;</span>
+    <span class="k">struct</span> <span class="n">Node</span> <span class="o">*</span><span class="n">left</span><span class="p">;</span>
+    <span class="k">struct</span> <span class="n">Node</span> <span class="o">*</span><span class="n">right</span><span class="p">;</span>
+<span class="p">};</span>
 
-struct Node
-{
-    int data;
-    struct Node *left;
-    struct Node *right;
-};
+<span class="c1">// 辅助创建树节点的函数</span>
+<span class="k">struct</span> <span class="n">Node</span> <span class="o">*</span><span class="nf">createNode</span><span class="p">(</span><span class="kt">int</span> <span class="n">data</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">struct</span> <span class="n">Node</span> <span class="o">*</span><span class="n">newNode</span> <span class="o">=</span> <span class="p">(</span><span class="k">struct</span> <span class="n">Node</span> <span class="o">*</span><span class="p">)</span><span class="n">malloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">Node</span><span class="p">));</span>
+    <span class="n">newNode</span><span class="o">-&gt;</span><span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="p">;</span>
+    <span class="n">newNode</span><span class="o">-&gt;</span><span class="n">left</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
+    <span class="n">newNode</span><span class="o">-&gt;</span><span class="n">right</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
+    <span class="k">return</span> <span class="n">newNode</span><span class="p">;</span>
+<span class="p">}</span>
 
-// 辅助创建树节点的函数
-struct Node *createNode(int data)
-{
-    struct Node *newNode = (struct Node *)malloc(sizeof(struct Node));
-    newNode-&gt;data = data;
-    newNode-&gt;left = NULL;
-    newNode-&gt;right = NULL;
-    return newNode;
-}
+<span class="n">bool</span> <span class="nf">IsBST</span><span class="p">(</span><span class="k">struct</span> <span class="n">Node</span> <span class="o">*</span><span class="n">root</span><span class="p">,</span> <span class="kt">int</span> <span class="n">Min_value</span><span class="p">,</span> <span class="kt">int</span> <span class="n">Max_value</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">root</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">true</span><span class="p">;</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">root</span><span class="o">-&gt;</span><span class="n">data</span> <span class="o">&gt;</span> <span class="n">Min_value</span> <span class="o">&amp;&amp;</span> <span class="n">root</span><span class="o">-&gt;</span><span class="n">data</span> <span class="o">&lt;=</span> <span class="n">Max_value</span> <span class="o">&amp;&amp;</span> <span class="n">IsBST</span><span class="p">(</span><span class="n">root</span><span class="o">-&gt;</span><span class="n">left</span><span class="p">,</span> <span class="n">Min_value</span><span class="p">,</span> <span class="n">root</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="n">IsBST</span><span class="p">(</span><span class="n">root</span><span class="o">-&gt;</span><span class="n">right</span><span class="p">,</span> <span class="n">root</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">,</span> <span class="n">Max_value</span><span class="p">))</span>
+        <span class="k">return</span> <span class="nb">true</span><span class="p">;</span>
+    <span class="k">else</span>
+        <span class="k">return</span> <span class="nb">false</span><span class="p">;</span>
+<span class="p">}</span>
 
-bool IsBST(struct Node *root, int Min_value, int Max_value)
-{
-    if (root == NULL)
-        return true;
-    if (root-&gt;data &gt; Min_value &amp;&amp; root-&gt;data &lt;= Max_value &amp;&amp; IsBST(root-&gt;left, Min_value, root-&gt;data) &amp;&amp; IsBST(root-&gt;right, root-&gt;data, Max_value))
-        return true;
-    else
-        return false;
-}
-
-int main()
-{
-    /* 构造一棵简单的树用于测试:
+<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span>
+<span class="p">{</span>
+    <span class="cm">/* 构造一棵简单的树用于测试:
               7
            /    \
           4      9
          / \    / \
         1   6  8   10
-    */
-    struct Node *root = createNode(7);
-    root-&gt;left = createNode(4);
-    root-&gt;right = createNode(9);
-    root-&gt;left-&gt;left = createNode(5);
-    root-&gt;left-&gt;right = createNode(6);
-    root-&gt;right-&gt;left = createNode(8);
-    root-&gt;right-&gt;right = createNode(10);
-    if (IsBST(root, -2147483648, 2147483647))
-        printf("The tree is a binary search tree.\n");
-    else
-        printf("The tree is not a binary search tree.\n");
-    return 0;
-}
-</code></pre> <ol> <li>使用中序遍历，判断遍历后的数据是否是一个递增的数组</li> </ol> <h4 id="bst删除一个节点">BST删除一个节点</h4> <p>既要删除节点，又要保证删除后的二叉树仍为BST，可以分为三种情况：</p> <ol> <li>删除的节点是叶子节点，直接删除，返回NULL</li> <li>删除的节点只有左子树或右子树，返回root.right，free当前root；</li> <li>删除的节点既有左子树又有右子树，寻找右子树里的最小值，替换掉root.data，然后删除右子树里的最小值。</li> </ol> <pre><code class="language-C">#include &lt;stdio.h&gt;
-#include &lt;stdlib.h&gt;
-#include &lt;stdbool.h&gt;
+    */</span>
+    <span class="k">struct</span> <span class="n">Node</span> <span class="o">*</span><span class="n">root</span> <span class="o">=</span> <span class="n">createNode</span><span class="p">(</span><span class="mi">7</span><span class="p">);</span>
+    <span class="n">root</span><span class="o">-&gt;</span><span class="n">left</span> <span class="o">=</span> <span class="n">createNode</span><span class="p">(</span><span class="mi">4</span><span class="p">);</span>
+    <span class="n">root</span><span class="o">-&gt;</span><span class="n">right</span> <span class="o">=</span> <span class="n">createNode</span><span class="p">(</span><span class="mi">9</span><span class="p">);</span>
+    <span class="n">root</span><span class="o">-&gt;</span><span class="n">left</span><span class="o">-&gt;</span><span class="n">left</span> <span class="o">=</span> <span class="n">createNode</span><span class="p">(</span><span class="mi">5</span><span class="p">);</span>
+    <span class="n">root</span><span class="o">-&gt;</span><span class="n">left</span><span class="o">-&gt;</span><span class="n">right</span> <span class="o">=</span> <span class="n">createNode</span><span class="p">(</span><span class="mi">6</span><span class="p">);</span>
+    <span class="n">root</span><span class="o">-&gt;</span><span class="n">right</span><span class="o">-&gt;</span><span class="n">left</span> <span class="o">=</span> <span class="n">createNode</span><span class="p">(</span><span class="mi">8</span><span class="p">);</span>
+    <span class="n">root</span><span class="o">-&gt;</span><span class="n">right</span><span class="o">-&gt;</span><span class="n">right</span> <span class="o">=</span> <span class="n">createNode</span><span class="p">(</span><span class="mi">10</span><span class="p">);</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">IsBST</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="o">-</span><span class="mi">2147483648</span><span class="p">,</span> <span class="mi">2147483647</span><span class="p">))</span>
+        <span class="n">printf</span><span class="p">(</span><span class="s">"The tree is a binary search tree.</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+    <span class="k">else</span>
+        <span class="n">printf</span><span class="p">(</span><span class="s">"The tree is not a binary search tree.</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div> <ol> <li>使用中序遍历，判断遍历后的数据是否是一个递增的数组</li> </ol> <h4 id="bst删除一个节点">BST删除一个节点</h4> <p>既要删除节点，又要保证删除后的二叉树仍为BST，可以分为三种情况：</p> <ol> <li>删除的节点是叶子节点，直接删除，返回NULL</li> <li>删除的节点只有左子树或右子树，返回root.right，free当前root；</li> <li>删除的节点既有左子树又有右子树，寻找右子树里的最小值，替换掉root.data，然后删除右子树里的最小值。</li> </ol> <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp">
+#include</span> <span class="cpf">&lt;stdlib.h&gt;</span><span class="cp">
+#include</span> <span class="cpf">&lt;stdbool.h&gt;</span><span class="cp">
+</span>
+<span class="k">struct</span> <span class="n">TreeNode</span>
+<span class="p">{</span>
+    <span class="kt">int</span> <span class="n">data</span><span class="p">;</span>
+    <span class="k">struct</span> <span class="n">TreeNode</span> <span class="o">*</span><span class="n">left</span><span class="p">;</span>
+    <span class="k">struct</span> <span class="n">TreeNode</span> <span class="o">*</span><span class="n">right</span><span class="p">;</span>
+<span class="p">};</span>
+<span class="c1">// 辅助创建树节点的函数</span>
+<span class="k">struct</span> <span class="n">TreeNode</span> <span class="o">*</span><span class="nf">createNode</span><span class="p">(</span><span class="kt">char</span> <span class="n">data</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">struct</span> <span class="n">TreeNode</span> <span class="o">*</span><span class="n">newNode</span> <span class="o">=</span> <span class="p">(</span><span class="k">struct</span> <span class="n">TreeNode</span> <span class="o">*</span><span class="p">)</span><span class="n">malloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">TreeNode</span><span class="p">));</span>
+    <span class="n">newNode</span><span class="o">-&gt;</span><span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="p">;</span>
+    <span class="n">newNode</span><span class="o">-&gt;</span><span class="n">left</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
+    <span class="n">newNode</span><span class="o">-&gt;</span><span class="n">right</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
+    <span class="k">return</span> <span class="n">newNode</span><span class="p">;</span>
+<span class="p">}</span>
 
-struct TreeNode
-{
-    int data;
-    struct TreeNode *left;
-    struct TreeNode *right;
-};
-// 辅助创建树节点的函数
-struct TreeNode *createNode(char data)
-{
-    struct TreeNode *newNode = (struct TreeNode *)malloc(sizeof(struct TreeNode));
-    newNode-&gt;data = data;
-    newNode-&gt;left = NULL;
-    newNode-&gt;right = NULL;
-    return newNode;
-}
+<span class="k">struct</span> <span class="n">TreeNode</span> <span class="o">*</span><span class="nf">FindMin</span><span class="p">(</span><span class="k">struct</span> <span class="n">TreeNode</span> <span class="o">*</span><span class="n">root</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">while</span> <span class="p">(</span><span class="n">root</span><span class="o">-&gt;</span><span class="n">left</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span>
+        <span class="n">root</span> <span class="o">=</span> <span class="n">root</span><span class="o">-&gt;</span><span class="n">left</span><span class="p">;</span>
+    <span class="k">return</span> <span class="n">root</span><span class="p">;</span>
+<span class="p">}</span>
 
-struct TreeNode *FindMin(struct TreeNode *root)
-{
-    while (root-&gt;left != NULL)
-        root = root-&gt;left;
-    return root;
-}
+<span class="k">struct</span> <span class="n">TreeNode</span> <span class="o">*</span><span class="nf">FindMax</span><span class="p">(</span><span class="k">struct</span> <span class="n">TreeNode</span> <span class="o">*</span><span class="n">root</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">while</span> <span class="p">(</span><span class="n">root</span><span class="o">-&gt;</span><span class="n">right</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span>
+        <span class="n">root</span> <span class="o">=</span> <span class="n">root</span><span class="o">-&gt;</span><span class="n">right</span><span class="p">;</span>
+    <span class="k">return</span> <span class="n">root</span><span class="p">;</span>
+<span class="p">}</span>
 
-struct TreeNode *FindMax(struct TreeNode *root)
-{
-    while (root-&gt;right != NULL)
-        root = root-&gt;right;
-    return root;
-}
+<span class="k">struct</span> <span class="n">TreeNode</span> <span class="o">*</span><span class="nf">Delete</span><span class="p">(</span><span class="k">struct</span> <span class="n">TreeNode</span> <span class="o">*</span><span class="n">root</span><span class="p">,</span> <span class="kt">int</span> <span class="n">data</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">root</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">root</span><span class="p">;</span>
+    <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">root</span><span class="o">-&gt;</span><span class="n">data</span> <span class="o">&lt;</span> <span class="n">data</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="n">root</span><span class="o">-&gt;</span><span class="n">right</span> <span class="o">=</span> <span class="n">Delete</span><span class="p">(</span><span class="n">root</span><span class="o">-&gt;</span><span class="n">right</span><span class="p">,</span> <span class="n">data</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">root</span><span class="o">-&gt;</span><span class="n">data</span> <span class="o">&gt;</span> <span class="n">data</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="n">root</span><span class="o">-&gt;</span><span class="n">left</span> <span class="o">=</span> <span class="n">Delete</span><span class="p">(</span><span class="n">root</span><span class="o">-&gt;</span><span class="n">left</span><span class="p">,</span> <span class="n">data</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="k">else</span>
+    <span class="p">{</span>
+        <span class="c1">// case 1:叶子节点</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">root</span><span class="o">-&gt;</span><span class="n">left</span> <span class="o">==</span> <span class="nb">NULL</span> <span class="o">&amp;&amp;</span> <span class="n">root</span><span class="o">-&gt;</span><span class="n">right</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span>
+        <span class="p">{</span>
+            <span class="n">free</span><span class="p">(</span><span class="n">root</span><span class="p">);</span>
+            <span class="n">root</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
+        <span class="p">}</span>
+        <span class="c1">// case 2: 只有左子树或只有右子树</span>
+        <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">root</span><span class="o">-&gt;</span><span class="n">left</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span>
+        <span class="p">{</span> <span class="c1">// 右子树</span>
+            <span class="k">struct</span> <span class="n">TreeNode</span> <span class="o">*</span><span class="n">temp</span> <span class="o">=</span> <span class="n">root</span><span class="p">;</span>
+            <span class="n">root</span> <span class="o">=</span> <span class="n">root</span><span class="o">-&gt;</span><span class="n">right</span><span class="p">;</span>
+            <span class="n">free</span><span class="p">(</span><span class="n">temp</span><span class="p">);</span>
+        <span class="p">}</span>
+        <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">root</span><span class="o">-&gt;</span><span class="n">right</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span>
+        <span class="p">{</span> <span class="c1">// 左子树</span>
+            <span class="k">struct</span> <span class="n">TreeNode</span> <span class="o">*</span><span class="n">temp</span> <span class="o">=</span> <span class="n">root</span><span class="p">;</span>
+            <span class="n">root</span> <span class="o">=</span> <span class="n">root</span><span class="o">-&gt;</span><span class="n">left</span><span class="p">;</span>
+            <span class="n">free</span><span class="p">(</span><span class="n">temp</span><span class="p">);</span>
+        <span class="p">}</span>
+        <span class="k">else</span> <span class="c1">// case 3：既有左子树又有右子树</span>
+        <span class="p">{</span>
+            <span class="k">struct</span> <span class="n">TreeNode</span> <span class="o">*</span><span class="n">temp</span><span class="p">;</span>
+            <span class="n">temp</span> <span class="o">=</span> <span class="n">FindMin</span><span class="p">(</span><span class="n">root</span><span class="o">-&gt;</span><span class="n">right</span><span class="p">);</span>
+            <span class="n">root</span><span class="o">-&gt;</span><span class="n">data</span> <span class="o">=</span> <span class="n">temp</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">;</span>
+            <span class="n">root</span><span class="o">-&gt;</span><span class="n">right</span> <span class="o">=</span> <span class="n">Delete</span><span class="p">(</span><span class="n">root</span><span class="o">-&gt;</span><span class="n">right</span><span class="p">,</span> <span class="n">temp</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">);</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="n">root</span><span class="p">;</span>
+<span class="p">}</span>
 
-struct TreeNode *Delete(struct TreeNode *root, int data)
-{
-    if (root == NULL)
-        return root;
-    else if (root-&gt;data &lt; data)
-    {
-        root-&gt;right = Delete(root-&gt;right, data);
-    }
-    else if (root-&gt;data &gt; data)
-    {
-        root-&gt;left = Delete(root-&gt;left, data);
-    }
-    else
-    {
-        // case 1:叶子节点
-        if (root-&gt;left == NULL &amp;&amp; root-&gt;right == NULL)
-        {
-            free(root);
-            root = NULL;
-        }
-        // case 2: 只有左子树或只有右子树
-        else if (root-&gt;left == NULL)
-        { // 右子树
-            struct TreeNode *temp = root;
-            root = root-&gt;right;
-            free(temp);
-        }
-        else if (root-&gt;right == NULL)
-        { // 左子树
-            struct TreeNode *temp = root;
-            root = root-&gt;left;
-            free(temp);
-        }
-        else // case 3：既有左子树又有右子树
-        {
-            struct TreeNode *temp;
-            temp = FindMin(root-&gt;right);
-            root-&gt;data = temp-&gt;data;
-            root-&gt;right = Delete(root-&gt;right, temp-&gt;data);
-        }
-    }
-    return root;
-}
+<span class="c1">// 中序遍历输出（左-根-右）</span>
+<span class="kt">void</span> <span class="nf">inorderPrint</span><span class="p">(</span><span class="k">struct</span> <span class="n">TreeNode</span> <span class="o">*</span><span class="n">root</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">root</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span>
+        <span class="k">return</span><span class="p">;</span>
+    <span class="n">inorderPrint</span><span class="p">(</span><span class="n">root</span><span class="o">-&gt;</span><span class="n">left</span><span class="p">);</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">"%d "</span><span class="p">,</span> <span class="n">root</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">);</span>
+    <span class="n">inorderPrint</span><span class="p">(</span><span class="n">root</span><span class="o">-&gt;</span><span class="n">right</span><span class="p">);</span>
+<span class="p">}</span>
 
-// 中序遍历输出（左-根-右）
-void inorderPrint(struct TreeNode *root)
-{
-    if (root == NULL)
-        return;
-    inorderPrint(root-&gt;left);
-    printf("%d ", root-&gt;data);
-    inorderPrint(root-&gt;right);
-}
-
-int main()
-{
-    /* 构造一棵简单的树用于测试:
+<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span>
+<span class="p">{</span>
+    <span class="cm">/* 构造一棵简单的树用于测试:
               7
            /    \
           4      9
          / \    / \
         1   6  8   10
-    */
-    struct TreeNode *root = createNode(7);
-    root-&gt;left = createNode(4);
-    root-&gt;right = createNode(9);
-    root-&gt;left-&gt;left = createNode(1);
-    root-&gt;left-&gt;right = createNode(6);
-    root-&gt;right-&gt;left = createNode(8);
-    root-&gt;right-&gt;right = createNode(10);
+    */</span>
+    <span class="k">struct</span> <span class="n">TreeNode</span> <span class="o">*</span><span class="n">root</span> <span class="o">=</span> <span class="n">createNode</span><span class="p">(</span><span class="mi">7</span><span class="p">);</span>
+    <span class="n">root</span><span class="o">-&gt;</span><span class="n">left</span> <span class="o">=</span> <span class="n">createNode</span><span class="p">(</span><span class="mi">4</span><span class="p">);</span>
+    <span class="n">root</span><span class="o">-&gt;</span><span class="n">right</span> <span class="o">=</span> <span class="n">createNode</span><span class="p">(</span><span class="mi">9</span><span class="p">);</span>
+    <span class="n">root</span><span class="o">-&gt;</span><span class="n">left</span><span class="o">-&gt;</span><span class="n">left</span> <span class="o">=</span> <span class="n">createNode</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+    <span class="n">root</span><span class="o">-&gt;</span><span class="n">left</span><span class="o">-&gt;</span><span class="n">right</span> <span class="o">=</span> <span class="n">createNode</span><span class="p">(</span><span class="mi">6</span><span class="p">);</span>
+    <span class="n">root</span><span class="o">-&gt;</span><span class="n">right</span><span class="o">-&gt;</span><span class="n">left</span> <span class="o">=</span> <span class="n">createNode</span><span class="p">(</span><span class="mi">8</span><span class="p">);</span>
+    <span class="n">root</span><span class="o">-&gt;</span><span class="n">right</span><span class="o">-&gt;</span><span class="n">right</span> <span class="o">=</span> <span class="n">createNode</span><span class="p">(</span><span class="mi">10</span><span class="p">);</span>
 
-    // 在这里调用删除函数并测试结果
-    printf("Original tree (in-order): ");
-    inorderPrint(root);
-    printf("\nDeleting 4...\n");
-    root = Delete(root, 4);
-    printf("Tree after deletion (in-order): ");
-    inorderPrint(root);
-    return 0;
-}
-</code></pre> <h4 id="bst的中序后继节点">BST的中序后继节点</h4> <p>在二叉搜索树（BST）中找特定节点的后继（Successor），最简单粗暴的方法是完整遍历一次存入数组，然后再找下一个元素，但这需要 $O(n)$ 的时间复杂度。 真正优雅且高效的做法是利用 BST 的结构特性（左 &lt; 根 &lt; 右），在 $O(h)$（$h$ 为树的高度）的时间内直接定位后继节点。 中序遍历的顺序是 左 -&gt; 根 -&gt; 右。在 BST 中，中序遍历的结果是一个严格递增的序列。因此，找 p 的中序后继，本质上就是找树中比 p-&gt;data 大的最小节点。</p> <ol> <li>如果 p 有右子树，它的中序后继一定在右子树里，且是右子树中data最小的节点（即右子树的最左下角的叶子节点）。</li> <li>如果 p 没有右子树，说明以 p 为根的局部子树已经遍历完了。我们需要向上回溯，找它的祖先。它的后继是距离它最近的、且将 p 包含在其左子树中的那个祖先节点。利用 BST 特性，我们直接从根节点往下找，只要向左拐，就记录一下当前的祖先。</li> </ol> <pre><code class="language-C">#include &lt;stdio.h&gt;
-#include &lt;stdlib.h&gt;
-#include &lt;stdbool.h&gt;
+    <span class="c1">// 在这里调用删除函数并测试结果</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">"Original tree (in-order): "</span><span class="p">);</span>
+    <span class="n">inorderPrint</span><span class="p">(</span><span class="n">root</span><span class="p">);</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">"</span><span class="se">\n</span><span class="s">Deleting 4...</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+    <span class="n">root</span> <span class="o">=</span> <span class="n">Delete</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="mi">4</span><span class="p">);</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">"Tree after deletion (in-order): "</span><span class="p">);</span>
+    <span class="n">inorderPrint</span><span class="p">(</span><span class="n">root</span><span class="p">);</span>
+    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div> <h4 id="bst的中序后继节点">BST的中序后继节点</h4> <p>在二叉搜索树（BST）中找特定节点的后继（Successor），最简单粗暴的方法是完整遍历一次存入数组，然后再找下一个元素，但这需要 $O(n)$ 的时间复杂度。 真正优雅且高效的做法是利用 BST 的结构特性（左 &lt; 根 &lt; 右），在 $O(h)$（$h$ 为树的高度）的时间内直接定位后继节点。 中序遍历的顺序是 左 -&gt; 根 -&gt; 右。在 BST 中，中序遍历的结果是一个严格递增的序列。因此，找 p 的中序后继，本质上就是找树中比 p-&gt;data 大的最小节点。</p> <ol> <li>如果 p 有右子树，它的中序后继一定在右子树里，且是右子树中data最小的节点（即右子树的最左下角的叶子节点）。</li> <li>如果 p 没有右子树，说明以 p 为根的局部子树已经遍历完了。我们需要向上回溯，找它的祖先。它的后继是距离它最近的、且将 p 包含在其左子树中的那个祖先节点。利用 BST 特性，我们直接从根节点往下找，只要向左拐，就记录一下当前的祖先。</li> </ol> <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp">
+#include</span> <span class="cpf">&lt;stdlib.h&gt;</span><span class="cp">
+#include</span> <span class="cpf">&lt;stdbool.h&gt;</span><span class="cp">
+</span>
+<span class="k">struct</span> <span class="n">TreeNode</span>
+<span class="p">{</span>
+    <span class="kt">int</span> <span class="n">data</span><span class="p">;</span>
+    <span class="k">struct</span> <span class="n">TreeNode</span> <span class="o">*</span><span class="n">left</span><span class="p">;</span>
+    <span class="k">struct</span> <span class="n">TreeNode</span> <span class="o">*</span><span class="n">right</span><span class="p">;</span>
+<span class="p">};</span>
 
-struct TreeNode
-{
-    int data;
-    struct TreeNode *left;
-    struct TreeNode *right;
-};
+<span class="k">struct</span> <span class="n">TreeNode</span> <span class="o">*</span><span class="nf">createNode</span><span class="p">(</span><span class="kt">int</span> <span class="n">data</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">struct</span> <span class="n">TreeNode</span> <span class="o">*</span><span class="n">newNode</span> <span class="o">=</span> <span class="p">(</span><span class="k">struct</span> <span class="n">TreeNode</span> <span class="o">*</span><span class="p">)</span><span class="n">malloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">TreeNode</span><span class="p">));</span>
+    <span class="n">newNode</span><span class="o">-&gt;</span><span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="p">;</span>
+    <span class="n">newNode</span><span class="o">-&gt;</span><span class="n">left</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
+    <span class="n">newNode</span><span class="o">-&gt;</span><span class="n">right</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
+    <span class="k">return</span> <span class="n">newNode</span><span class="p">;</span>
+<span class="p">}</span>
 
-struct TreeNode *createNode(int data)
-{
-    struct TreeNode *newNode = (struct TreeNode *)malloc(sizeof(struct TreeNode));
-    newNode-&gt;data = data;
-    newNode-&gt;left = NULL;
-    newNode-&gt;right = NULL;
-    return newNode;
-}
+<span class="k">struct</span> <span class="n">TreeNode</span> <span class="o">*</span><span class="nf">Find</span><span class="p">(</span><span class="k">struct</span> <span class="n">TreeNode</span> <span class="o">*</span><span class="n">root</span><span class="p">,</span> <span class="kt">int</span> <span class="n">data</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">while</span> <span class="p">(</span><span class="n">root</span> <span class="o">!=</span> <span class="nb">NULL</span> <span class="o">&amp;&amp;</span> <span class="n">root</span><span class="o">-&gt;</span><span class="n">data</span> <span class="o">!=</span> <span class="n">data</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">data</span> <span class="o">&lt;</span> <span class="n">root</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">)</span>
+        <span class="p">{</span>
+            <span class="n">root</span> <span class="o">=</span> <span class="n">root</span><span class="o">-&gt;</span><span class="n">left</span><span class="p">;</span> <span class="c1">// 目标小，去左边找</span>
+        <span class="p">}</span>
+        <span class="k">else</span>
+        <span class="p">{</span>
+            <span class="n">root</span> <span class="o">=</span> <span class="n">root</span><span class="o">-&gt;</span><span class="n">right</span><span class="p">;</span> <span class="c1">// 目标大，去右边找</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="n">root</span><span class="p">;</span>
+<span class="p">}</span>
 
-struct TreeNode *Find(struct TreeNode *root, int data)
-{
-    while (root != NULL &amp;&amp; root-&gt;data != data)
-    {
-        if (data &lt; root-&gt;data)
-        {
-            root = root-&gt;left; // 目标小，去左边找
-        }
-        else
-        {
-            root = root-&gt;right; // 目标大，去右边找
-        }
-    }
-    return root;
-}
+<span class="k">struct</span> <span class="n">TreeNode</span> <span class="o">*</span><span class="nf">FindMin</span><span class="p">(</span><span class="k">struct</span> <span class="n">TreeNode</span> <span class="o">*</span><span class="n">root</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">root</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">NULL</span><span class="p">;</span>
+    <span class="k">while</span> <span class="p">(</span><span class="n">root</span><span class="o">-&gt;</span><span class="n">left</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span>
+        <span class="n">root</span> <span class="o">=</span> <span class="n">root</span><span class="o">-&gt;</span><span class="n">left</span><span class="p">;</span>
+    <span class="k">return</span> <span class="n">root</span><span class="p">;</span>
+<span class="p">}</span>
 
-struct TreeNode *FindMin(struct TreeNode *root)
-{
-    if (root == NULL)
-        return NULL;
-    while (root-&gt;left != NULL)
-        root = root-&gt;left;
-    return root;
-}
+<span class="k">struct</span> <span class="n">TreeNode</span> <span class="o">*</span><span class="nf">GetInOrderSuccessor</span><span class="p">(</span><span class="k">struct</span> <span class="n">TreeNode</span> <span class="o">*</span><span class="n">root</span><span class="p">,</span> <span class="kt">int</span> <span class="n">data</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">root</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">NULL</span><span class="p">;</span>
+    <span class="k">struct</span> <span class="n">TreeNode</span> <span class="o">*</span><span class="n">current</span> <span class="o">=</span> <span class="n">Find</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">data</span><span class="p">);</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">current</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">NULL</span><span class="p">;</span>
+    <span class="c1">// case 1: 有右子树</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">current</span><span class="o">-&gt;</span><span class="n">right</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="k">return</span> <span class="n">FindMin</span><span class="p">(</span><span class="n">current</span><span class="o">-&gt;</span><span class="n">right</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="c1">// case 2: 没有右子树</span>
+    <span class="k">else</span>
+    <span class="p">{</span>
+        <span class="k">struct</span> <span class="n">TreeNode</span> <span class="o">*</span><span class="n">successor</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
+        <span class="k">struct</span> <span class="n">TreeNode</span> <span class="o">*</span><span class="n">ancestor</span> <span class="o">=</span> <span class="n">root</span><span class="p">;</span>
+        <span class="k">while</span> <span class="p">(</span><span class="n">ancestor</span> <span class="o">!=</span> <span class="n">current</span><span class="p">)</span>
+        <span class="p">{</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">data</span> <span class="o">&lt;</span> <span class="n">ancestor</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">)</span>
+            <span class="p">{</span>
+                <span class="n">successor</span> <span class="o">=</span> <span class="n">ancestor</span><span class="p">;</span>
+                <span class="n">ancestor</span> <span class="o">=</span> <span class="n">ancestor</span><span class="o">-&gt;</span><span class="n">left</span><span class="p">;</span>
+            <span class="p">}</span>
+            <span class="k">else</span>
+            <span class="p">{</span>
+                <span class="n">ancestor</span> <span class="o">=</span> <span class="n">ancestor</span><span class="o">-&gt;</span><span class="n">right</span><span class="p">;</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+        <span class="k">return</span> <span class="n">successor</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
 
-struct TreeNode *GetInOrderSuccessor(struct TreeNode *root, int data)
-{
-    if (root == NULL)
-        return NULL;
-    struct TreeNode *current = Find(root, data);
-    if (current == NULL)
-        return NULL;
-    // case 1: 有右子树
-    if (current-&gt;right != NULL)
-    {
-        return FindMin(current-&gt;right);
-    }
-    // case 2: 没有右子树
-    else
-    {
-        struct TreeNode *successor = NULL;
-        struct TreeNode *ancestor = root;
-        while (ancestor != current)
-        {
-            if (data &lt; ancestor-&gt;data)
-            {
-                successor = ancestor;
-                ancestor = ancestor-&gt;left;
-            }
-            else
-            {
-                ancestor = ancestor-&gt;right;
-            }
-        }
-        return successor;
-    }
-}
-
-int main()
-{
-    /* 构造一棵简单的树用于测试:
+<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span>
+<span class="p">{</span>
+    <span class="cm">/* 构造一棵简单的树用于测试:
                   7
                /    \
               4      9
              / \    / \
             1   6  8   10
-        */
-    struct TreeNode *root = createNode(7);
-    struct TreeNode *temp;
-    root-&gt;left = createNode(4);
-    root-&gt;right = createNode(9);
-    root-&gt;left-&gt;left = createNode(1);
-    root-&gt;left-&gt;right = createNode(6);
-    root-&gt;right-&gt;left = createNode(8);
-    root-&gt;right-&gt;right = createNode(10);
+        */</span>
+    <span class="k">struct</span> <span class="n">TreeNode</span> <span class="o">*</span><span class="n">root</span> <span class="o">=</span> <span class="n">createNode</span><span class="p">(</span><span class="mi">7</span><span class="p">);</span>
+    <span class="k">struct</span> <span class="n">TreeNode</span> <span class="o">*</span><span class="n">temp</span><span class="p">;</span>
+    <span class="n">root</span><span class="o">-&gt;</span><span class="n">left</span> <span class="o">=</span> <span class="n">createNode</span><span class="p">(</span><span class="mi">4</span><span class="p">);</span>
+    <span class="n">root</span><span class="o">-&gt;</span><span class="n">right</span> <span class="o">=</span> <span class="n">createNode</span><span class="p">(</span><span class="mi">9</span><span class="p">);</span>
+    <span class="n">root</span><span class="o">-&gt;</span><span class="n">left</span><span class="o">-&gt;</span><span class="n">left</span> <span class="o">=</span> <span class="n">createNode</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+    <span class="n">root</span><span class="o">-&gt;</span><span class="n">left</span><span class="o">-&gt;</span><span class="n">right</span> <span class="o">=</span> <span class="n">createNode</span><span class="p">(</span><span class="mi">6</span><span class="p">);</span>
+    <span class="n">root</span><span class="o">-&gt;</span><span class="n">right</span><span class="o">-&gt;</span><span class="n">left</span> <span class="o">=</span> <span class="n">createNode</span><span class="p">(</span><span class="mi">8</span><span class="p">);</span>
+    <span class="n">root</span><span class="o">-&gt;</span><span class="n">right</span><span class="o">-&gt;</span><span class="n">right</span> <span class="o">=</span> <span class="n">createNode</span><span class="p">(</span><span class="mi">10</span><span class="p">);</span>
 
-    temp = GetInOrderSuccessor(root, 7);
-    printf("%d \n", temp-&gt;data);
+    <span class="n">temp</span> <span class="o">=</span> <span class="n">GetInOrderSuccessor</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="mi">7</span><span class="p">);</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">"%d </span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">temp</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">);</span>
 
-    return 0;
-}
-</code></pre> <h4 id="bst的前序后继节点">BST的前序后继节点</h4> <p>前序遍历的顺序是 根 -&gt; 左 -&gt; 右。找p的后继节点，进行分类讨论：</p> <ol> <li>如果p有左孩子，那么下一个必定访问p的左孩子。</li> <li>如果p没有左孩但是有右孩，那么下一个只能访问右孩。</li> <li>如果p是叶子节点，那么需要向上回溯，寻找没访问过的右分支，后续节点是距离 p 最近的、将 p 包含在其左子树中，并且拥有右孩子的那个祖先的右孩子。同样利用 BST 特性，从根往下找，只要向左拐且该节点有右孩子，就更新潜在的后继节点。</li> </ol> <pre><code class="language-C">struct TreeNode *GetPreOrderSuccessor(struct TreeNode *root, int data)
-{
-    if (root == NULL)
-        return NULL;
-    struct TreeNode *current = Find(root, data);
-    if (current == NULL)
-        return NULL;
-    // case 1: 有左子树
-    if (current-&gt;left != NULL)
-    {
-        return current-&gt;left;
-    }
-    else if (current-&gt;right != NULL)
-    {
-        return current-&gt;right;
-    }
-    else
-    {
-        struct TreeNode *successor = NULL;
-        struct TreeNode *ancestor = root;
-        while (ancestor != current)
-        {
-            if (data &lt; ancestor-&gt;data &amp;&amp; ancestor-&gt;right != NULL)
-            {
-                successor = ancestor;
-                ancestor = ancestor-&gt;left;
-            }
-            else
-            {
-                ancestor = ancestor-&gt;right;
-            }
-        }
-        return successor-&gt;right;
-    }
-}
-</code></pre> <h2 id="图">图</h2> <p>图是由一个顶点集V和一个边集E组成的有序对组成的. 表示为$G = (V,E)$ <img src="/assets/img/blog/data-structures/image-5.png" alt="图的顶点与边示意图"/> <img src="/assets/img/blog/data-structures/image-6.png" alt="有向图与无向图示意图"/></p> <ul> <li>根据图里的边有向还是无向可以分成<strong>有向图(Digraph)</strong>和<strong>无向图</strong>.</li> <li>加权图:每条边赋予不同的权重,非加权图可以看成边权重全为1的加权图.</li> <li>自环(self-loop):一条边只包含一个顶点，例如网页刷新。</li> <li>多重边(multiedge): 两个顶点之间不止一条边，例如两地之间的航班。</li> <li> <table> <tbody> <tr> <td>在<strong>没有自环和多重边</strong>的情况下，如果$</td> <td>V</td> <td>= n $ ,则有向图的边数 $0 \leq</td> <td>E</td> <td>\leq n(n-1) $ ;无向图的边数为 $ 0 \leq</td> <td>E</td> <td>\leq \frac{n(n-1)}{2} $</td> </tr> </tbody> </table> <ul> <li>稠密的图：边的数量接近顶点数$ n^2 $ ，使用<strong>邻接矩阵</strong>处理</li> <li>稀疏的图：边的数量接近顶点数$ n $ ，使用<strong>邻接表</strong>处理</li> <li>稀疏还是稠密没有明确的界限，取决于上下文</li> </ul> </li> <li>简单路径（simple <strong>Path</strong>）：无重复的边或者顶点</li> <li>连接：在无向图里，能从任意一个顶点走到另一个任意节点，称为连接；在有向图里，则被称为强连接。</li> <li>闭合途径：指开始和结束在同一个顶点，且路径长度<strong>大于0</strong>；</li> </ul> <h3 id="使用c实现图">使用C实现图</h3> <table> <tbody> <tr> <td>空间复杂度 $ O(</td> <td>V</td> <td>+</td> <td>E</td> <td>) $</td> </tr> </tbody> </table> <h4 id="邻接矩阵">邻接矩阵</h4> <p><img src="/assets/img/blog/data-structures/image-7.png" alt="图的邻接矩阵表示"/> 为了表示权重图可以将1换成权重值，0换成∞。 找到相邻节点的时间花费为$ O(V) $；在给出索引的情况下，判断两个相邻节点是否相连的花费为$ O(1) $。 邻接矩阵会占用很大的内存空间，对稠密的图的表现是好的。</p> <h4 id="邻接表">邻接表</h4> <p><img src="/assets/img/blog/data-structures/image-8.png" alt="图的邻接表示示意图"/> <img src="/assets/img/blog/data-structures/image-9.png" alt="图的邻接表表示"/></p>]]></content><author><name></name></author><category term="学习笔记"/><category term="数据结构"/><category term="C语言"/><category term="算法"/><summary type="html"><![CDATA[系统整理链表、栈、队列、树、排序与图等常见数据结构的概念、复杂度和 C 语言实现。]]></summary></entry></feed>
+    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div> <h4 id="bst的前序后继节点">BST的前序后继节点</h4> <p>前序遍历的顺序是 根 -&gt; 左 -&gt; 右。找p的后继节点，进行分类讨论：</p> <ol> <li>如果p有左孩子，那么下一个必定访问p的左孩子。</li> <li>如果p没有左孩但是有右孩，那么下一个只能访问右孩。</li> <li>如果p是叶子节点，那么需要向上回溯，寻找没访问过的右分支，后续节点是距离 p 最近的、将 p 包含在其左子树中，并且拥有右孩子的那个祖先的右孩子。同样利用 BST 特性，从根往下找，只要向左拐且该节点有右孩子，就更新潜在的后继节点。</li> </ol> <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">struct</span> <span class="n">TreeNode</span> <span class="o">*</span><span class="nf">GetPreOrderSuccessor</span><span class="p">(</span><span class="k">struct</span> <span class="n">TreeNode</span> <span class="o">*</span><span class="n">root</span><span class="p">,</span> <span class="kt">int</span> <span class="n">data</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">root</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">NULL</span><span class="p">;</span>
+    <span class="k">struct</span> <span class="n">TreeNode</span> <span class="o">*</span><span class="n">current</span> <span class="o">=</span> <span class="n">Find</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">data</span><span class="p">);</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">current</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">NULL</span><span class="p">;</span>
+    <span class="c1">// case 1: 有左子树</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">current</span><span class="o">-&gt;</span><span class="n">left</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="k">return</span> <span class="n">current</span><span class="o">-&gt;</span><span class="n">left</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">current</span><span class="o">-&gt;</span><span class="n">right</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="k">return</span> <span class="n">current</span><span class="o">-&gt;</span><span class="n">right</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">else</span>
+    <span class="p">{</span>
+        <span class="k">struct</span> <span class="n">TreeNode</span> <span class="o">*</span><span class="n">successor</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
+        <span class="k">struct</span> <span class="n">TreeNode</span> <span class="o">*</span><span class="n">ancestor</span> <span class="o">=</span> <span class="n">root</span><span class="p">;</span>
+        <span class="k">while</span> <span class="p">(</span><span class="n">ancestor</span> <span class="o">!=</span> <span class="n">current</span><span class="p">)</span>
+        <span class="p">{</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">data</span> <span class="o">&lt;</span> <span class="n">ancestor</span><span class="o">-&gt;</span><span class="n">data</span> <span class="o">&amp;&amp;</span> <span class="n">ancestor</span><span class="o">-&gt;</span><span class="n">right</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span>
+            <span class="p">{</span>
+                <span class="n">successor</span> <span class="o">=</span> <span class="n">ancestor</span><span class="p">;</span>
+                <span class="n">ancestor</span> <span class="o">=</span> <span class="n">ancestor</span><span class="o">-&gt;</span><span class="n">left</span><span class="p">;</span>
+            <span class="p">}</span>
+            <span class="k">else</span>
+            <span class="p">{</span>
+                <span class="n">ancestor</span> <span class="o">=</span> <span class="n">ancestor</span><span class="o">-&gt;</span><span class="n">right</span><span class="p">;</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+        <span class="k">return</span> <span class="n">successor</span><span class="o">-&gt;</span><span class="n">right</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div> <h2 id="图">图</h2> <p>图是由一个顶点集V和一个边集E组成的有序对组成的. 表示为$G = (V,E)$ <img src="/assets/img/blog/data-structures/image-5.png" alt="图的顶点与边示意图"/> <img src="/assets/img/blog/data-structures/image-6.png" alt="有向图与无向图示意图"/></p> <ul> <li>根据图里的边有向还是无向可以分成<strong>有向图(Digraph)</strong>和<strong>无向图</strong>.</li> <li>加权图:每条边赋予不同的权重,非加权图可以看成边权重全为1的加权图.</li> <li>自环(self-loop):一条边只包含一个顶点，例如网页刷新。</li> <li>多重边(multiedge): 两个顶点之间不止一条边，例如两地之间的航班。</li> <li> <table> <tbody> <tr> <td>在<strong>没有自环和多重边</strong>的情况下，如果$</td> <td>V</td> <td>= n $ ,则有向图的边数 $0 \leq</td> <td>E</td> <td>\leq n(n-1) $ ;无向图的边数为 $ 0 \leq</td> <td>E</td> <td>\leq \frac{n(n-1)}{2} $</td> </tr> </tbody> </table> <ul> <li>稠密的图：边的数量接近顶点数$ n^2 $ ，使用<strong>邻接矩阵</strong>处理</li> <li>稀疏的图：边的数量接近顶点数$ n $ ，使用<strong>邻接表</strong>处理</li> <li>稀疏还是稠密没有明确的界限，取决于上下文</li> </ul> </li> <li>简单路径（simple <strong>Path</strong>）：无重复的边或者顶点</li> <li>连接：在无向图里，能从任意一个顶点走到另一个任意节点，称为连接；在有向图里，则被称为强连接。</li> <li>闭合途径：指开始和结束在同一个顶点，且路径长度<strong>大于0</strong>；</li> </ul> <h3 id="使用c实现图">使用C实现图</h3> <table> <tbody> <tr> <td>空间复杂度 $ O(</td> <td>V</td> <td>+</td> <td>E</td> <td>) $</td> </tr> </tbody> </table> <h4 id="邻接矩阵">邻接矩阵</h4> <p><img src="/assets/img/blog/data-structures/image-7.png" alt="图的邻接矩阵表示"/> 为了表示权重图可以将1换成权重值，0换成∞。 找到相邻节点的时间花费为$ O(V) $；在给出索引的情况下，判断两个相邻节点是否相连的花费为$ O(1) $。 邻接矩阵会占用很大的内存空间，对稠密的图的表现是好的。</p> <h4 id="邻接表">邻接表</h4> <p><img src="/assets/img/blog/data-structures/image-8.png" alt="图的邻接表示示意图"/> <img src="/assets/img/blog/data-structures/image-9.png" alt="图的邻接表表示"/></p>]]></content><author><name></name></author><category term="学习笔记"/><category term="数据结构"/><category term="C语言"/><category term="算法"/><summary type="html"><![CDATA[系统整理链表、栈、队列、树、排序与图等常见数据结构的概念、复杂度和 C 语言实现。]]></summary></entry></feed>
