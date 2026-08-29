@@ -598,13 +598,18 @@ struct tree{
 > - 完美二叉树最大节点数：$$2^{h+1} - 1$$
 > - 完美二叉树根据节点计算高度: $$h = \log_2(n+1) - 1$$
 > - 完全二叉树的高度：$$h = \lfloor \log_2n \rfloor$$
->   ![完全二叉树示意图]({{ '/assets/img/blog/data-structures/image-1.png' | relative_url }})
->   ![完美二叉树示意图]({{ '/assets/img/blog/data-structures/image-2.png' | relative_url }})
->   **在节点数一定的情况下完全二叉树的高度更小，时间复杂度更小**
+
+![完全二叉树示意图]({{ '/assets/img/blog/data-structures/image-1.png' | relative_url }})
+
+![完美二叉树示意图]({{ '/assets/img/blog/data-structures/image-2.png' | relative_url }})
+
+> **在节点数一定的情况下完全二叉树的高度更小，时间复杂度更小**
 
 平衡二叉树：计算该节点的左子树和右子树高度的差（令空子树的高度为-1），差值为不大于k。一般k = 1.
 
-![完全二叉树高度示意图]({{ '/assets/img/blog/data-structures/image-3.png' | relative_url }}) 只针对完全二叉树成立
+![完全二叉树高度示意图]({{ '/assets/img/blog/data-structures/image-3.png' | relative_url }})
+
+_图示高度关系只针对完全二叉树成立。_
 
 #### 二叉搜索树(Binary Search Tree)
 
@@ -1201,6 +1206,7 @@ struct TreeNode *GetPreOrderSuccessor(struct TreeNode *root, int data)
 
 图是由一个顶点集V和一个边集E组成的有序对组成的. 表示为$G = (V,E)$
 ![图的顶点与边示意图]({{ '/assets/img/blog/data-structures/image-5.png' | relative_url }})
+
 ![有向图与无向图示意图]({{ '/assets/img/blog/data-structures/image-6.png' | relative_url }})
 
 - 根据图里的边有向还是无向可以分成**有向图(Digraph)**和**无向图**.
@@ -1230,4 +1236,5 @@ struct TreeNode *GetPreOrderSuccessor(struct TreeNode *root, int data)
 #### 邻接表
 
 ![图的邻接表示示意图]({{ '/assets/img/blog/data-structures/image-8.png' | relative_url }})
+
 ![图的邻接表表示]({{ '/assets/img/blog/data-structures/image-9.png' | relative_url }})
