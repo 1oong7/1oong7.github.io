@@ -52,7 +52,7 @@ struct node{
 
 - 从头插入
 
-```C
+```c
 void InsertAtStart(int x) {
     struct Node * temp = (struct Node*)malloc(sizeof(struct Node));
     temp->data =x;
@@ -82,7 +82,7 @@ void InsertAtEnd(int data){
 
 - 任意位置插入
 
-```C
+```c
 void InsertAtMiddle(int data,int n) {
     if (n < 1) {
         printf("Invalid position\n");
@@ -115,7 +115,7 @@ void InsertAtMiddle(int data,int n) {
 
 - 删除
 
-```C
+```c
 void link_Delete(int n){
     struct Node *temp1 = (struct Node *)malloc(sizeof(struct Node));
     if (temp1 == NULL) {
@@ -138,7 +138,7 @@ void link_Delete(int n){
 
 - 反转一个链表
 
-```C
+```c
 //迭代方法
 void Reverse(){
     struct Node *current ,*prev , *next;
@@ -185,7 +185,7 @@ void Reverse_Recursion(struct Node * p){
 
 #### 双链表
 
-```C
+```c
 //头插入 尾插入 删除 打印 反转打印
 #include <stdio.h>
 #include <stdlib.h>
@@ -382,7 +382,7 @@ int main(){
 `front = (front - 1 + N ) % N;  //front--`
 显然，此时所有的操作时间复杂度都是O(1). 如果队列已满，需要扩展时，时间复杂度提高.
 
-```C
+```c
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
@@ -478,7 +478,7 @@ int main(){
 
 可以看出队列的实现实际上就是对一个链表进行头插和尾去(两者可以互换)，可以多使用一个`rear`标志来指引
 
-```C
+```c
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
@@ -578,7 +578,7 @@ int main() {
 
 ![树的节点与层级结构示意图]({{ '/assets/img/blog/data-structures/image.png' | relative_url }})
 
-```C
+```c
 struct tree{
     int data;
     struct tree *left;
@@ -624,7 +624,7 @@ BST定义：所有左子树上的节点值都比该节点的值要小，所有�
   - 层级遍历: F D J B E G K A C I H
     - 时间复杂度O(n) 空间复杂度最好O(1) 最差O(n) 平均O(n)
 
-```C
+```c
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
@@ -768,7 +768,7 @@ int main()
     - `<left> <right> <root>` -- 后序遍历 `LRD` ACBEDHIGKJF
     - 时间复杂度O(n) 空间复杂度O(h) 最差O(n) 最好/平均O(logn)
 
-```C
+```c
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
@@ -855,7 +855,7 @@ int main()
 
 1. 使用递归方法，判断左子树中的每个元素都要小于当前root节点的data，右子树每个元素都要大于当前root的data，循环执行直到跳出。
 
-```C
+```c
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
@@ -921,7 +921,7 @@ int main()
 2. 删除的节点只有左子树或右子树，返回root.right，free当前root；
 3. 删除的节点既有左子树又有右子树，寻找右子树里的最小值，替换掉root.data，然后删除右子树里的最小值。
 
-```C
+```c
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
@@ -1047,7 +1047,7 @@ int main()
 1. 如果 p 有右子树，它的中序后继一定在右子树里，且是右子树中data最小的节点（即右子树的最左下角的叶子节点）。
 2. 如果 p 没有右子树，说明以 p 为根的局部子树已经遍历完了。我们需要向上回溯，找它的祖先。它的后继是距离它最近的、且将 p 包含在其左子树中的那个祖先节点。利用 BST 特性，我们直接从根节点往下找，只要向左拐，就记录一下当前的祖先。
 
-```C
+```c
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
@@ -1159,7 +1159,7 @@ int main()
 2. 如果p没有左孩但是有右孩，那么下一个只能访问右孩。
 3. 如果p是叶子节点，那么需要向上回溯，寻找没访问过的右分支，后续节点是距离 p 最近的、将 p 包含在其左子树中，并且拥有右孩子的那个祖先的右孩子。同样利用 BST 特性，从根往下找，只要向左拐且该节点有右孩子，就更新潜在的后继节点。
 
-```C
+```c
 struct TreeNode *GetPreOrderSuccessor(struct TreeNode *root, int data)
 {
     if (root == NULL)

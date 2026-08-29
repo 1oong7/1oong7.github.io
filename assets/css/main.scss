@@ -1,0 +1,167 @@
+---
+---
+
+@charset "utf-8";
+
+@use "sass:math";
+@use "sass:string";
+
+@use "variables" with (
+  $max-content-width: {{site.max_width | default: "930px"}}
+);
+@use "themes";
+@use "layout";
+@use "typography";
+@use "navbar";
+@use "footer";
+@use "blog";
+@use "publications";
+@use "components";
+@use "utilities";
+@use "tabs";
+@use "teachings";
+@use "typograms";
+
+/*
+ * Site-specific typography.
+ * Use system fonts so Chinese and Latin text remain visually consistent even
+ * when third-party font CDNs are slow or unavailable.
+ */
+:root {
+  --site-sans-font:
+    system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei UI", "Microsoft YaHei", "Noto Sans CJK SC",
+    "Source Han Sans SC", Arial, sans-serif;
+  --site-mono-font: "Cascadia Code", "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+}
+
+html,
+body,
+button,
+input,
+select,
+textarea,
+.navbar,
+.post,
+.page,
+.post-title,
+.post-description,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+li,
+table,
+blockquote {
+  font-family: var(--site-sans-font);
+}
+
+body {
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code,
+kbd,
+samp,
+pre,
+.highlight code,
+.highlight pre,
+.highlight .lineno {
+  font-family: var(--site-mono-font);
+  font-variant-ligatures: none;
+}
+
+/* Keep large blog diagrams inside the article without cropping them. */
+#markdown-content {
+  min-width: 0;
+  overflow: visible;
+}
+
+#markdown-content picture,
+#markdown-content figure {
+  display: block;
+  max-width: 100%;
+}
+
+#markdown-content img,
+.post-content img {
+  display: block;
+  width: auto;
+  max-width: 100% !important;
+  height: auto !important;
+  max-height: none !important;
+  margin-right: auto;
+  margin-left: auto;
+  object-fit: contain;
+}
+
+/* Education timeline on the home page. */
+.education-list {
+  display: grid;
+  gap: 1.75rem;
+  margin: 1.25rem 0 2.75rem;
+}
+
+.education-item {
+  padding: 0.15rem 0 0.15rem 1.25rem;
+  border-left: 3px solid var(--global-theme-color);
+}
+
+.education-item h3 {
+  margin: 0 0 0.75rem;
+  font-size: 1.35rem;
+  font-weight: 600;
+}
+
+.education-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem 0.65rem;
+  align-items: baseline;
+  margin-bottom: 0.65rem;
+  line-height: 1.75;
+}
+
+.education-item ul {
+  margin: 0;
+  padding-left: 1.25rem;
+}
+
+.education-item li {
+  line-height: 1.8;
+}
+
+/* Make the desktop table of contents easier to scan and separate it from the article. */
+@media (min-width: 768px) {
+  #toc-sidebar {
+    width: calc(100% - 2rem);
+    padding: 0.65rem 0.75rem 0.65rem 0;
+    font-size: 1rem;
+    line-height: 1.55;
+  }
+
+  #toc-sidebar .toc-link {
+    display: inline-block;
+    padding: 0.16rem 0;
+    font-size: 0.98rem;
+    line-height: 1.55;
+  }
+
+  #toc-sidebar .toc-list {
+    padding-left: 0.8rem;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .education-item {
+    padding-left: 0.9rem;
+  }
+
+  .education-meta {
+    gap: 0.2rem 0.45rem;
+  }
+}

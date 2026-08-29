@@ -102,7 +102,7 @@ posts_in_search: true
 bib_search: true
 
 # Dimensions
-max_width: 930px
+max_width: 1280px
 
 # -----------------------------------------------------------------------------
 # Open Graph & Schema.org
@@ -535,7 +535,7 @@ third_party_libraries:
     version: "5.5.0"
   google_fonts:
     url:
-      fonts: "https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Roboto+Slab:100,300,400,500,700|Material+Icons&display=swap"
+      fonts: "https://fonts.googleapis.com/css?family=Material+Icons&display=swap"
   highlightjs:
     integrity:
       css:

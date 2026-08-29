@@ -29,6 +29,44 @@ latest_posts:
 
 我主要关注嵌入式系统开发、IMU 姿态融合以及 Unity 交互应用。这个网站用于记录项目实践、技术笔记、学习思考以及一些随笔。
 
+## 教育经历
+
+<div class="education-list">
+  <section class="education-item">
+    <h3>燕山大学</h3>
+    <p class="education-meta">
+      <strong>电气工程学院</strong>
+      <span aria-hidden="true">·</span>
+      <strong>人工智能</strong>
+      <span aria-hidden="true">·</span>
+      <strong>硕士在读</strong>
+      <time datetime="2025-09">2025.09</time>
+      <span aria-hidden="true">–</span>
+      <span>至今</span>
+    </p>
+    <ul>
+      <li>研究方向：深度强化学习、移动机器人</li>
+    </ul>
+  </section>
+
+  <section class="education-item">
+    <h3>中北大学</h3>
+    <p class="education-meta">
+      <strong>半导体与物理学院</strong>
+      <span aria-hidden="true">·</span>
+      <strong>应用物理学</strong>
+      <span aria-hidden="true">·</span>
+      <strong>本科</strong>
+      <time datetime="2020-09">2020.09</time>
+      <span aria-hidden="true">–</span>
+      <time datetime="2024-06">2024.06</time>
+    </p>
+    <ul>
+      <li>系统学习了物理、数学及工程分析相关基础课程</li>
+    </ul>
+  </section>
+</div>
+
 ## 关注方向
 
 - STM32、nRF52 嵌入式开发
