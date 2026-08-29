@@ -43,6 +43,13 @@
   --code-function: #8250df;
   --code-operator: #cf222e;
   --code-preprocessor: #953800;
+  --archive-panel-bg: #f4f6f8;
+  --archive-card-bg: #ffffff;
+  --archive-line: #cbd3dc;
+  --archive-line-strong: #66788a;
+  --archive-accent: #2f4858;
+  --archive-muted: #667483;
+  --archive-shadow: 0 10px 28px rgba(31, 45, 61, 0.08);
 }
 
 html[data-theme="dark"],
@@ -58,6 +65,13 @@ html.dark {
   --code-function: #d2a8ff;
   --code-operator: #ff7b72;
   --code-preprocessor: #ffa657;
+  --archive-panel-bg: #111821;
+  --archive-card-bg: #171f2a;
+  --archive-line: #344252;
+  --archive-line-strong: #718196;
+  --archive-accent: #c3d0dc;
+  --archive-muted: #9aa8b8;
+  --archive-shadow: 0 12px 32px rgba(0, 0, 0, 0.24);
 }
 
 html,
@@ -152,60 +166,150 @@ pre,
   box-shadow: none;
 }
 
-/* Minimal about page, close to al-folio's native academic layout. */
-.about-intro {
-  max-width: 48rem;
-  line-height: 1.85;
+/* Profile archive: nested panels inspired by yuyuko.me, with a restrained palette. */
+.post article > .clearfix:has(.profile-archive) {
+  padding: 1.1rem;
+  overflow: hidden;
+  background: var(--archive-panel-bg);
+  border: 1px solid var(--archive-line);
+  border-radius: 12px;
+  box-shadow: var(--archive-shadow);
 }
 
-.about-intro p:first-child {
-  margin-bottom: 0.7rem;
-  font-size: 1.08rem;
+.post article > .clearfix:has(.profile-archive) .profile {
+  padding: 0.85rem;
+  margin-left: 1.1rem;
+  background: var(--archive-card-bg);
+  border: 1px solid var(--archive-line);
+  border-radius: 9px;
+  box-shadow: none;
 }
 
-.about-sections {
-  clear: both;
-  padding-top: 1.4rem;
+.post article > .clearfix:has(.profile-archive) .profile figure {
+  margin-bottom: 0.75rem;
 }
 
-.about-section {
-  margin-top: 2.4rem;
+.post article > .clearfix:has(.profile-archive) .profile img {
+  border: 1px solid var(--archive-line);
+  box-shadow: none !important;
 }
 
-.about-section:first-child {
-  margin-top: 0;
+.profile-contact {
+  display: grid;
+  gap: 0.55rem;
+  padding-top: 0.75rem;
+  margin-top: 0.35rem;
+  font-size: 0.84rem;
+  border-top: 1px solid var(--archive-line);
 }
 
-.about-section > h2 {
-  padding-bottom: 0.45rem;
-  margin-bottom: 1.15rem;
-  font-size: 1.6rem;
-  font-weight: 500;
-  border-bottom: 1px solid var(--global-divider-color);
-}
-
-.focus-list {
-  padding-left: 1.2rem;
+.profile-contact p {
+  display: grid;
+  grid-template-columns: 1rem minmax(0, 1fr);
+  gap: 0.55rem;
+  align-items: baseline;
   margin: 0;
-  column-count: 2;
-  column-gap: 3rem;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
 }
 
-.focus-list li {
-  padding: 0.12rem 0;
-  line-height: 1.75;
-  break-inside: avoid;
+.profile-contact i {
+  width: 1rem;
+  color: var(--archive-accent);
+  text-align: center;
+}
+
+.profile-contact a {
+  color: var(--global-text-color);
+}
+
+.profile-contact a:hover {
+  color: var(--global-theme-color);
+}
+
+.profile-archive {
+  min-width: 0;
+  margin-right: calc(30% + 1.1rem);
+}
+
+.archive-intro {
+  padding: 0.1rem 0.2rem 1rem;
+  border-bottom: 1px solid var(--archive-line);
+}
+
+.archive-label,
+.archive-card-label {
+  margin: 0;
+  color: var(--archive-muted);
+  font-family: var(--site-mono-font);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.11em;
+}
+
+.archive-intro h2 {
+  margin: 0.25rem 0 0.75rem;
+  color: var(--archive-accent);
+  font-size: 1.45rem;
+  font-weight: 600;
+}
+
+.archive-intro p:not(.archive-label) {
+  margin-bottom: 0.6rem;
+  line-height: 1.8;
+}
+
+.archive-intro p:last-child {
+  margin-bottom: 0;
+}
+
+.archive-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.9rem;
+  padding-top: 0.9rem;
+}
+
+.archive-card {
+  min-width: 0;
+  padding: 0.95rem;
+  background: var(--archive-card-bg);
+  border: 1px solid var(--archive-line);
+  border-radius: 9px;
+}
+
+.archive-card-wide {
+  grid-column: 1 / -1;
+}
+
+.archive-card > h2 {
+  padding-bottom: 0.55rem;
+  margin: 0.22rem 0 0.85rem;
+  color: var(--archive-accent);
+  font-size: 1.08rem;
+  font-weight: 600;
+  border-bottom: 1px solid var(--archive-line);
+}
+
+.archive-list {
+  padding-left: 1.15rem;
+  margin: 0;
+}
+
+.archive-list li {
+  padding: 0.08rem 0;
+  line-height: 1.7;
 }
 
 .education-list {
   display: grid;
-  gap: 1.65rem;
+  gap: 1.25rem;
   margin: 0;
 }
 
 .education-item {
-  padding-left: 1.1rem;
-  border-left: 2px solid var(--global-divider-color);
+  padding-left: 1rem;
+  border-left: 2px solid var(--archive-line-strong);
 }
 
 .education-item h3 {
@@ -230,6 +334,21 @@ pre,
 
 .education-item li {
   line-height: 1.8;
+}
+
+.post:has(.profile-archive) .news,
+.post:has(.profile-archive) .social {
+  padding: 0.9rem 1rem;
+  background: var(--archive-card-bg);
+  border: 1px solid var(--archive-line);
+  border-radius: 9px;
+}
+
+.post:has(.profile-archive) article > h2 {
+  margin-top: 1.8rem;
+  color: var(--archive-accent);
+  font-size: 1.35rem;
+  font-weight: 600;
 }
 
 /* A deterministic Rouge palette that remains readable in both themes. */
@@ -320,9 +439,33 @@ pre,
   }
 }
 
-@media (max-width: 575.98px) {
-  .focus-list {
-    column-count: 1;
+@media (max-width: 991.98px) {
+  .archive-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .archive-card-wide {
+    grid-column: auto;
+  }
+}
+
+@media (max-width: 767.98px) {
+  .post article > .clearfix:has(.profile-archive) {
+    padding: 0.8rem;
+  }
+
+  .post article > .clearfix:has(.profile-archive) .profile {
+    float: none !important;
+    width: 100% !important;
+    margin: 0 0 0.85rem;
+  }
+
+  .profile-archive {
+    margin-right: 0;
+  }
+
+  .archive-card {
+    padding: 0.8rem;
   }
 
   .education-item {
